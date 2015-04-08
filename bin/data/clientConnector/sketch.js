@@ -1,6 +1,8 @@
 function setup() {
-   createCanvas(100, 100);
+   createCanvas(200, 100);
    gem.getInstance().setupSocket();
+   
+   //gem.getInstance().setColor(0,0,255,0,1);
 }
 
 function draw() {
@@ -16,4 +18,9 @@ function draw() {
 	{
 		background(255,255,0);
 	}
+	
+	
+	
 }
+
+

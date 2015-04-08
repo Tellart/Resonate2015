@@ -18,9 +18,8 @@ void ofApp::setup(){
     // Begin scanning for MetaWear boards
     [[MBLMetaWearManager sharedManager] startScanForMetaWearsWithHandler:^(NSArray *array) {
         // Hooray! We found a MetaWear board, so stop scanning for more
-        [[MBLMetaWearManager sharedManager] stopScanForMetaWears];
+        //[[MBLMetaWearManager sharedManager] stopScanForMetaWears];
         // Connect to the board we found
-        
         
         for (int i=0; i<[array count]; i++) {
             MBLMetaWear *device = [array objectAtIndex:i];
@@ -32,7 +31,31 @@ void ofApp::setup(){
                     [device.led setLEDColor:[UIColor colorWithRed:255 green:255 blue:255 alpha:255] withIntensity:0];
                 }
             }];
-            bleDeviceMap[i]=device;
+            //*****CHECK IF DEVICE ALREADY SAVED*****//
+            bool deviceAlreadyPresent = false;
+            for(int k=0;k<MAX_NUM_OF_DEVICES;k++)
+            {
+                if(bleDeviceMap[k]!=nil)
+                {
+                    if(bleDeviceMap[k].identifier==device.identifier)
+                    {
+                        deviceAlreadyPresent = true;
+                    }
+                }
+            }
+            NSLog(@"%d",deviceAlreadyPresent);
+            //*****IF NOT SAVED, SAVE DEVICE*****//
+            if(!deviceAlreadyPresent)
+            {
+                for(int k=0;k<MAX_NUM_OF_DEVICES;k++)
+                {
+                    if(bleDeviceMap[k]==nil)
+                    {
+                        bleDeviceMap[k]=device;
+                        break;
+                    }
+                }
+            }
         }
     }];
     

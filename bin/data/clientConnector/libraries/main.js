@@ -18,7 +18,7 @@ var  gem= (function () {
 			if (BrowserDetect.browser == "Firefox") {
 				object.socket = new MozWebSocket(get_appropriate_ws_url("192.168.1.12:9092"));
 			} else {
-				object.socket = new WebSocket(get_appropriate_ws_url("192.168.1.12:9092"));
+				object.socket = new ReconnectingWebSocket(get_appropriate_ws_url("192.168.1.12:9092"));
 			}
 			
 			// open

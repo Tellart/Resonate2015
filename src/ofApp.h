@@ -4,7 +4,11 @@
 #include "ofxiOS.h"
 #include "ofxiOSExtras.h"
 #include "ofxLibwebsockets.h"
+#import <MetaWear/MetaWear.h>
+
 #define NUM_MESSAGES 30 // how many past messages we want to keep
+#define MAX_NUM_OF_DEVICES 16
+
 
 class ofApp : public ofxiOSApp {
 	
@@ -13,7 +17,7 @@ class ofApp : public ofxiOSApp {
         void update();
         void draw();
         void exit();
-	
+	/*
         void touchDown(ofTouchEventArgs & touch);
         void touchMoved(ofTouchEventArgs & touch);
         void touchUp(ofTouchEventArgs & touch);
@@ -22,13 +26,61 @@ class ofApp : public ofxiOSApp {
 
         void lostFocus();
         void gotFocus();
-        void gotMemoryWarning();
         void deviceOrientationChanged(int newOrientation);
+     
+     //--------------------------------------------------------------
+     void ofApp::touchDown(ofTouchEventArgs & touch){
+     
+     }
+     
+     //--------------------------------------------------------------
+     void ofApp::touchMoved(ofTouchEventArgs & touch){
+     
+     }
+     
+     //--------------------------------------------------------------
+     void ofApp::touchUp(ofTouchEventArgs & touch){
+     
+     }
+     
+     //--------------------------------------------------------------
+     void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
+     
+     }
+     
+     //--------------------------------------------------------------
+     void ofApp::touchCancelled(ofTouchEventArgs & touch){
+     
+     }
+     
+     //--------------------------------------------------------------
+     void ofApp::lostFocus(){
+     
+     }
+     
+     //--------------------------------------------------------------
+     void ofApp::gotFocus(){
+     
+     }
+     
+    
+     
+     //--------------------------------------------------------------
+     void ofApp::deviceOrientationChanged(int newOrientation){
+     
+     }
+
+    */
+        void gotMemoryWarning();
+ 
     
         ofxLibwebsockets::Server server;
     
         vector<string> messages;
-        map<string,ofxLibwebsockets::Connection> elementsConnected;
+    
+        string       bleIPMap[MAX_NUM_OF_DEVICES];
+        MBLMetaWear* bleDeviceMap[MAX_NUM_OF_DEVICES];
+    
         string delayedMessage="";
         
         void sendMessageWithDelay(string message);
@@ -42,6 +94,13 @@ class ofApp : public ofxiOSApp {
         void onIdle( ofxLibwebsockets::Event& args );
         void onMessage( ofxLibwebsockets::Event& args );
         void onBroadcast( ofxLibwebsockets::Event& args );
+    
+    
+        //**BOARD MANAGER**//
+        void initStructures();
+        void assignIPToDevice(string ip);
+        void setColor(int boardNumber,int red, int green, int blue);
+    
 };
 
 

@@ -38,10 +38,17 @@ var  gem= (function () {
 				}
 			} catch(exception) {
 				alert('<p>Error' + exception);  
+				object.status = "ERROR";
 			}
 		}
-		object.sendMessage = function(){
-			object.socket.send("{\"message\":\"start\"}");
+		
+		object.setColor= function(deviceNumber,red,green,blue,intensity)
+		{
+			var message="{\"message\":\"setColor\",\"device\":\""+deviceNumber+"\",\"red\":\""+red+"\",\"blue\":\""+blue+"\",\"green\":\""+green+"\",\"intensity\":\""+intensity+"\"}";
+			this.sendMessage(message);
+		}
+		object.sendMessage = function(message){
+			object.socket.send(message);
 		}
         return object;
     }

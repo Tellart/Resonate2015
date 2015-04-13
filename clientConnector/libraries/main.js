@@ -41,7 +41,7 @@ var  gem= (function () {
 
 				// received message
 				object.socket.onmessage =function got_packet(msg) {
-					console.log(msg);
+					
 					messageObejct = JSON.parse(msg.data);
 					if(messageObejct["message"]=="buttonEvent")
 					{
@@ -62,7 +62,7 @@ var  gem= (function () {
 						object.accelerometer.x = messageObejct["x"];
 						object.accelerometer.y = messageObejct["y"];
 						object.accelerometer.z = messageObejct["z"];
-						console.log(object.accelerometer);
+						
 					}
 				}
 

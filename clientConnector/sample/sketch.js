@@ -7,7 +7,7 @@ function setup() {
 }
 
 function draw() {
-  
+  background(255);
  if(gem.getInstance().status=="OPENED" && !started)
   {
     console.log("registering accelerometer 1");

@@ -13,7 +13,7 @@ void ofApp::setup(){
     
     ofSetFrameRate(3);
     initStructures();
-    
+    NSArray *whiteList = @[@"AB316079-B6D3-89EA-5C09-080DAA732412",@"AB316079-B6D3-89EA-5C09-080DAA732412",@"AB316079-B6D3-89EA-5C09-080DAA732412",@"AB316079-B6D3-89EA-5C09-080DAA732412"];
     
     // Begin scanning for MetaWear boards
     [[MBLMetaWearManager sharedManager] startScanForMetaWearsWithHandler:^(NSArray *array) {
@@ -23,41 +23,47 @@ void ofApp::setup(){
         
         for (int i=0; i<[array count]; i++) {
             MBLMetaWear *device = [array objectAtIndex:i];
-            [device rememberDevice];
-            [device connectWithHandler:^(NSError *error) {
-                if (!error) {
-                    
-                    // Hooray! We connected to a MetaWear board, so flash its LED!
-                    [device.led flashLEDColor:[UIColor greenColor] withIntensity:1 numberOfFlashes:2];
-                    
-                
-                }
-            }];
-            //*****CHECK IF DEVICE ALREADY SAVED*****//
-            bool deviceAlreadyPresent = false;
-            for(int k=0;k<MAX_NUM_OF_DEVICES;k++)
+            if([whiteList indexOfObject:device.identifier.UUIDString]!= NSNotFound)
             {
-                if(bleDeviceMap[k]!=nil)
-                {
-                    if(bleDeviceMap[k].identifier==device.identifier)
-                    {
-                        deviceAlreadyPresent = true;
+                [device connectWithHandler:^(NSError *error) {
+                    if (!error) {
+                        
+                        // Hooray! We connected to a MetaWear board, so flash its LED!
+                        [device.led flashLEDColor:[UIColor greenColor] withIntensity:1 numberOfFlashes:2];
+                        NSLog(@"%@",device.identifier.UUIDString);
+                        
+                        [device rememberDevice];
+                       
+                        
+                        //*****CHECK IF DEVICE ALREADY SAVED*****//
+                        bool deviceAlreadyPresent = false;
+                        for(int k=0;k<MAX_NUM_OF_DEVICES;k++)
+                        {
+                            if(bleDeviceMap[k]!=nil)
+                            {
+                                if(bleDeviceMap[k].identifier==device.identifier)
+                                {
+                                    deviceAlreadyPresent = true;
+                                }
+                            }
+                        }
+                        //*****IF NOT SAVED, SAVE DEVICE*****//
+                        if(!deviceAlreadyPresent)
+                        {
+                            for(int k=0;k<MAX_NUM_OF_DEVICES;k++)
+                            {
+                                if(bleDeviceMap[k]==nil)
+                                {
+                                    bleDeviceMap[k]=device;
+                                    break;
+                                }
+                            }
+                        }
+                       
                     }
-                }
+                }];
             }
-            NSLog(@"%d",deviceAlreadyPresent);
-            //*****IF NOT SAVED, SAVE DEVICE*****//
-            if(!deviceAlreadyPresent)
-            {
-                for(int k=0;k<MAX_NUM_OF_DEVICES;k++)
-                {
-                    if(bleDeviceMap[k]==nil)
-                    {
-                        bleDeviceMap[k]=device;
-                        break;
-                    }
-                }
-            }
+          
         }
     }];
 }
@@ -244,10 +250,10 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                 }
                 if(!ipPresent){
                     bleDeviceMap[deviceIndex].accelerometer.fullScaleRange = MBLAccelerometerRange2G;  // Default: +- 8G
-                    bleDeviceMap[deviceIndex].accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency1_56Hz;
+                    bleDeviceMap[deviceIndex].accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency12_5Hz;
                     [bleDeviceMap[deviceIndex].accelerometer.dataReadyEvent startNotificationsWithHandler:^(MBLAccelerometerData *obj, NSError   *error) {
                         string newMessage="{\"message\":\"accelerometerEvent\",\"x\":\""+ofToString(obj.x)+"\",\"y\":\""+ofToString(obj.y)+"\",\"z\":\""+ofToString(obj.z)+"\"}";
-                        NSLog(@"accelerometer:%d,%d,%d",obj.x,obj.y,obj.z);
+                       // NSLog(@"accelerometer:%d,%d,%d",obj.x,obj.y,obj.z);
                         
                         server.send(newMessage, ipAddress);
                     }];

@@ -1,3 +1,5 @@
+EXERCISE num 2
+
 var started=false;
 
 function setup() {
@@ -18,5 +20,3 @@ function draw() {
     ellipse(100,100,map(gem.getInstance().accelerometer.y,-1024,1024,0,100),map(gem.getInstance().accelerometer.y,-1024,1024,0,100));
   
 }
-
-

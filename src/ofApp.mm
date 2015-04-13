@@ -26,9 +26,11 @@ void ofApp::setup(){
             [device rememberDevice];
             [device connectWithHandler:^(NSError *error) {
                 if (!error) {
+                    
                     // Hooray! We connected to a MetaWear board, so flash its LED!
-                    [device.led flashLEDColor:[UIColor greenColor] withIntensity:0.5];
-                    [device.led setLEDColor:[UIColor colorWithRed:255 green:255 blue:255 alpha:255] withIntensity:0];
+                    [device.led flashLEDColor:[UIColor greenColor] withIntensity:1 numberOfFlashes:2];
+                    
+                
                 }
             }];
             //*****CHECK IF DEVICE ALREADY SAVED*****//
@@ -58,7 +60,6 @@ void ofApp::setup(){
             }
         }
     }];
-    
 }
 
 //--------------------------------------------------------------
@@ -68,7 +69,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    
     ofBackground(0, 0, 0);
     if ( bSetup ){
         ofSetColor(0,150,0);
@@ -92,15 +93,30 @@ void ofApp::draw(){
     
     
     ofSetColor(255);
+    for (int i=0; i<MAX_NUM_OF_DEVICES; i++) {
+        if(bleDeviceMap[i]!=NULL)
+        {
+            ofRect(i*15+15, ofGetHeight()-15, 12, 12);
+        }
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::exit(){
+    //server.close();
+}
+//--------------------------------------------------------------
+void ofApp::lostFocus(){
+   // server.close();
 
 }
 //--------------------------------------------------------------
 void ofApp::gotMemoryWarning(){
     
+}
+//--------------------------------------------------------------
+void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
+    messages.clear();
 }
 /****************
  ******
@@ -154,10 +170,239 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         int green       = args.json.get("green", -1).asInt();
         int blue        = args.json.get("blue", -1).asInt();
         int intensity   = args.json.get("intensity", -1).asInt();
-        [bleDeviceMap[deviceIndex].led setLEDColor:[UIColor colorWithRed:red green:green blue:blue alpha:255] withIntensity:intensity];
+       
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && red>=0 && red <256 && green>=0 && green <256 && blue>=0 && blue <256 && intensity>=0 && intensity <256)
+        {
+        
+            [bleDeviceMap[deviceIndex].led setLEDColor:[UIColor colorWithRed:red green:green blue:blue alpha:255] withIntensity:ofMap(intensity, 0, 255, 0, 1)];
+        }
+        
         return;
     }
-    
+    else if(message == "registerButton")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        {
+            if(registeredForButton.find(deviceIndex)==registeredForButton.end())
+            {
+                bool ipPresent = false;
+                for (std::map<int, string>::iterator it=registeredForButton.begin(); it!=registeredForButton.end(); it++) {
+                    string ipTmp=it->second;
+                    if(ipTmp==ipAddress)
+                    {
+                        ipPresent=true;
+                    }
+                }
+                if(!ipPresent){
+                    [bleDeviceMap[deviceIndex].mechanicalSwitch.switchUpdateEvent startNotificationsWithHandler:^(MBLNumericData* obj, NSError   *error) {
+                        string newMessage="{\"message\":\"buttonEvent\",\"value\":\""+ofToString([obj.value integerValue])+"\"}";
+                        NSLog(@"Switch Changed: %@ %d %s", obj,deviceIndex,ipAddress.c_str());
+                        server.send(newMessage, ipAddress);
+                    }];
+                    registeredForButton[deviceIndex]=ipAddress;
+                }
+            }
+        }
+        
+        return;
+    }
+    else if(message == "releaseButton")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        
+        
+        
+        for (std::map<int, string>::iterator it=registeredForButton.begin(); it!=registeredForButton.end(); it++) {
+            string ipTmp=it->second;
+            if(ipTmp==ipAddress)
+            {
+                [bleDeviceMap[it->first].mechanicalSwitch.switchUpdateEvent stopNotifications];
+                registeredForButton.erase(deviceIndex);
+                break;
+            }
+        }
+    }
+    else if(message == "registerAccelerometer")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        {
+            if(registeredForAccelerometer.find(deviceIndex)==registeredForAccelerometer.end())
+            {
+                bool ipPresent = false;
+                for (std::map<int, string>::iterator it=registeredForAccelerometer.begin(); it!=registeredForAccelerometer.end(); it++) {
+                    string ipTmp=it->second;
+                    if(ipTmp==ipAddress)
+                    {
+                        ipPresent=true;
+                    }
+                }
+                if(!ipPresent){
+                    bleDeviceMap[deviceIndex].accelerometer.fullScaleRange = MBLAccelerometerRange8G;  // Default: +- 8G
+                    bleDeviceMap[deviceIndex].accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency1_56Hz;
+                    [bleDeviceMap[deviceIndex].accelerometer.dataReadyEvent startNotificationsWithHandler:^(MBLAccelerometerData *obj, NSError   *error) {
+                        string newMessage="{\"message\":\"accelerometerEvent\",\"x\":\""+ofToString(obj.x)+"\",\"y\":\""+ofToString(obj.y)+"\",\"z\":\""+ofToString(obj.z)+"\"}";
+                        NSLog(@"Switch Changed: %@ %d %s", obj,deviceIndex,ipAddress.c_str());
+                        server.send(newMessage, ipAddress);
+                    }];
+                    registeredForAccelerometer[deviceIndex]=ipAddress;
+                }
+            }
+        }
+        
+        return;
+    }
+    else if(message == "releaseAccelerometer")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        
+        
+        
+        for (std::map<int, string>::iterator it=registeredForAccelerometer.begin(); it!=registeredForAccelerometer.end(); it++) {
+            string ipTmp=it->second;
+            if(ipTmp==ipAddress)
+            {
+                [bleDeviceMap[it->first].accelerometer.dataReadyEvent stopNotifications];
+                registeredForAccelerometer.erase(deviceIndex);
+                registeredForAccelerometer.erase(it, it);
+                registeredForAccelerometer.erase(it->first);
+                break;
+            }
+        }
+    }
+    else if(message == "registerShake")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        {
+            if(registeredForShake.find(deviceIndex)==registeredForShake.end())
+            {
+                bool ipPresent = false;
+                for (std::map<int, string>::iterator it=registeredForShake.begin(); it!=registeredForShake.end(); it++) {
+                    string ipTmp=it->second;
+                    if(ipTmp==ipAddress)
+                    {
+                        ipPresent=true;
+                    }
+                }
+                if(!ipPresent){
+                    
+                    [bleDeviceMap[deviceIndex].accelerometer.shakeEvent startNotificationsWithHandler:^(id obj, NSError *error) {
+                        string newMessage="{\"message\":\"shakeEvent\"}";
+                        server.send(newMessage, ipAddress);
+
+                    }];
+                    
+                    registeredForShake[deviceIndex]=ipAddress;
+                }
+            }
+        }
+        
+        return;
+    }
+    else if(message == "releaseShake")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        
+        
+        
+        for (std::map<int, string>::iterator it=registeredForShake.begin(); it!=registeredForShake.end(); it++) {
+            string ipTmp=it->second;
+            if(ipTmp==ipAddress)
+            {
+                [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];
+                registeredForShake.erase(deviceIndex);
+                registeredForShake.erase(it, it);
+                registeredForShake.erase(it->first);
+                break;
+            }
+        }
+    }
+    else if(message == "registerTemperature")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        {
+            if(registeredForTemperature.find(deviceIndex)==registeredForTemperature.end())
+            {
+                bool ipPresent = false;
+                for (std::map<int, string>::iterator it=registeredForTemperature.begin(); it!=registeredForTemperature.end(); it++) {
+                    string ipTmp=it->second;
+                    if(ipTmp==ipAddress)
+                    {
+                        ipPresent=true;
+                    }
+                }
+                if(!ipPresent){
+                     bleDeviceMap[deviceIndex].temperature.samplePeriod = 2000;
+                    [ bleDeviceMap[deviceIndex].temperature.dataReadyEvent startNotificationsWithHandler:^(NSDecimalNumber* temp, NSError *error) {
+                        string suffix = bleDeviceMap[deviceIndex].temperature.units == MBLTemperatureUnitCelsius ? "°C" : "°F";
+                        
+                        NSString *decimalString =  [NSString stringWithFormat:@"%@",temp];
+                        decimalString = [[decimalString componentsSeparatedByString:@" "] objectAtIndex:4] ;
+                        string tempTmp = ofToString([decimalString UTF8String] )+suffix;
+                        
+                        tempTmp = "{\"message\":\"temperatureEvent\",\"value\":\""+tempTmp+"\"}";
+                        
+                        server.send(tempTmp, ipAddress);
+
+                    }];
+                   
+                    registeredForTemperature[deviceIndex]=ipAddress;
+                }
+            }
+        }
+        
+        return;
+    }
+    else if(message == "releaseTemperature")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        
+        
+        
+        for (std::map<int, string>::iterator it=registeredForTemperature.begin(); it!=registeredForTemperature.end(); it++) {
+            string ipTmp=it->second;
+            if(ipTmp==ipAddress)
+            {
+                [bleDeviceMap[it->first].temperature.dataReadyEvent stopNotifications];
+                registeredForTemperature.erase(deviceIndex);
+                registeredForTemperature.erase(it, it);
+                registeredForTemperature.erase(it->first);
+                break;
+            }
+        }
+    }
+    else if(message == "makeVibrate")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        uint8_t dcycle = 500;
+        uint16_t pwidth = 248;
+        
+        if(args.json.get("hasOptions",-1).asBool())
+        {
+            dcycle =ofClamp(args.json.get("dcycle", 500).asInt(),0,5000);
+            pwidth = ofClamp(args.json.get("pwidth",248).asInt(),0,248);
+        }
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        {
+            [bleDeviceMap[deviceIndex].hapticBuzzer startHapticWithDutyCycle:dcycle pulseWidth:pwidth completion:nil];
+        }
+    }
 }
 
 //--------------------------------------------------------------

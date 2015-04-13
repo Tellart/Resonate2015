@@ -17,14 +17,16 @@ class ofApp : public ofxiOSApp {
         void update();
         void draw();
         void exit();
+        void lostFocus();
+        void touchDoubleTap(ofTouchEventArgs & touch);
 	/*
         void touchDown(ofTouchEventArgs & touch);
         void touchMoved(ofTouchEventArgs & touch);
         void touchUp(ofTouchEventArgs & touch);
-        void touchDoubleTap(ofTouchEventArgs & touch);
+     
         void touchCancelled(ofTouchEventArgs & touch);
 
-        void lostFocus();
+     
         void gotFocus();
         void deviceOrientationChanged(int newOrientation);
      
@@ -43,20 +45,14 @@ class ofApp : public ofxiOSApp {
      
      }
      
-     //--------------------------------------------------------------
-     void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
      
-     }
      
      //--------------------------------------------------------------
      void ofApp::touchCancelled(ofTouchEventArgs & touch){
      
      }
      
-     //--------------------------------------------------------------
-     void ofApp::lostFocus(){
-     
-     }
+    
      
      //--------------------------------------------------------------
      void ofApp::gotFocus(){
@@ -80,6 +76,11 @@ class ofApp : public ofxiOSApp {
     
         string       bleIPMap[MAX_NUM_OF_DEVICES];
         MBLMetaWear* bleDeviceMap[MAX_NUM_OF_DEVICES];
+    
+        map<int,string> registeredForButton;
+        map<int,string> registeredForAccelerometer;
+        map<int,string> registeredForTemperature;
+        map<int,string> registeredForShake;
     
         string delayedMessage="";
         

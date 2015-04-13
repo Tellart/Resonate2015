@@ -11,10 +11,10 @@ function draw() {
  if(gem.getInstance().status=="OPENED" && !started)
   {
     console.log("registering accelerometer 1");
-    gem.getInstance().registerAccelerometer(0);
+   // gem.getInstance().registerAccelerometer(0);
     started = true;
   }
-  ellipse(100,100,map(gem.getInstance().accelerometer.y,-1024,1024,0,100),map(gem.getInstance().accelerometer.y,-1024,1024,0,100));
+  ellipse(100,100,clamp(map(gem.getInstance().accelerometer.y,-1024,1024,0,100),0,100),clamp(map(gem.getInstance().accelerometer.y,-1024,1024,0,100),0,100));
 }
 
 

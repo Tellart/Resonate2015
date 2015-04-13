@@ -41,7 +41,7 @@ var  gem= (function () {
 
 				// received message
 				object.socket.onmessage =function got_packet(msg) {
-					
+					console.log(msg);
 					messageObejct = JSON.parse(msg.data);
 					if(messageObejct["message"]=="buttonEvent")
 					{
@@ -52,7 +52,7 @@ var  gem= (function () {
 						else
 						{
 							object.buttonStateVariable=true;
-							object.buttonDelegate();
+							
 							
 						}
 						return;
@@ -63,6 +63,10 @@ var  gem= (function () {
 						object.accelerometer.y = messageObejct["y"];
 						object.accelerometer.z = messageObejct["z"];
 						
+					}
+					else if(messageObejct["message"] == "error")
+					{
+						console.warn(messageObejct["type"]);
 					}
 				}
 
@@ -166,4 +170,19 @@ var  gem= (function () {
         }
     };
 })();
+
+function clamp(value, minVal, maxVal)
+{
+	if(value<minVal)
+	{
+		value = minVal;
+		return value;
+	}
+	if(value>maxVal)
+	{
+		value = maxVal;
+		return value;
+	}
+	return value;
+}
  

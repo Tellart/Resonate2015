@@ -13,7 +13,7 @@ void ofApp::setup(){
     
     ofSetFrameRate(3);
     initStructures();
-    NSArray *whiteList = @[@"AB316079-B6D3-89EA-5C09-080DAA732412",@"AB316079-B6D3-89EA-5C09-080DAA732412",@"AB316079-B6D3-89EA-5C09-080DAA732412",@"AB316079-B6D3-89EA-5C09-080DAA732412"];
+    NSArray *whiteList = @[/*@"AB316079-B6D3-89EA-5C09-080DAA732412",*/@"E8DA9D39-D32D-CF43-E712-FEDCA7ECA7AE",@"A8F6BEC0-4EB0-DDED-6EF8-29348E410AD5",@"F427F60B-339F-8BDF-30D8-C236D02938BE",@"F427F60B-339F-8BDF-30D8-C236D02938BE",@"5411D6D5-D52F-8E34-D574-2A37CC97F088"];
     
     // Begin scanning for MetaWear boards
     [[MBLMetaWearManager sharedManager] startScanForMetaWearsWithHandler:^(NSArray *array) {
@@ -23,15 +23,13 @@ void ofApp::setup(){
         
         for (int i=0; i<[array count]; i++) {
             MBLMetaWear *device = [array objectAtIndex:i];
-            if([whiteList indexOfObject:device.identifier.UUIDString]!= NSNotFound)
-            {
+           if([whiteList indexOfObject:device.identifier.UUIDString]!= NSNotFound)//--
+            {//--
                 [device connectWithHandler:^(NSError *error) {
                     if (!error) {
                         
                         // Hooray! We connected to a MetaWear board, so flash its LED!
                         [device.led flashLEDColor:[UIColor greenColor] withIntensity:1 numberOfFlashes:2];
-                        NSLog(@"%@",device.identifier.UUIDString);
-                        
                         [device rememberDevice];
                        
                         
@@ -48,6 +46,7 @@ void ofApp::setup(){
                             }
                         }
                         //*****IF NOT SAVED, SAVE DEVICE*****//
+                        
                         if(!deviceAlreadyPresent)
                         {
                             for(int k=0;k<MAX_NUM_OF_DEVICES;k++)
@@ -58,11 +57,19 @@ void ofApp::setup(){
                                     break;
                                 }
                             }
+                            numOfConnectedDevices=0;
+                            for (int k=0; k<MAX_NUM_OF_DEVICES; k++) {
+                                if(bleDeviceMap[k]!=nil)
+                                {
+                                    numOfConnectedDevices++;
+                                }
+                            }
+                            
                         }
                        
                     }
                 }];
-            }
+              }//--
           
         }
     }];
@@ -98,12 +105,16 @@ void ofApp::draw(){
     if (messages.size() > NUM_MESSAGES) messages.erase( messages.begin() );
     
     
-    ofSetColor(255);
+    ofSetColor(255,200);
     for (int i=0; i<MAX_NUM_OF_DEVICES; i++) {
         if(bleDeviceMap[i]!=NULL)
         {
-            ofRect(i*15+15, ofGetHeight()-15, 12, 12);
+            ofRect(i*18+18, ofGetHeight()-15, 16, 16);
         }
+    }
+    for(int i=0; i<numOfConnectedDevices; i++)
+    {
+        ofRect(i*18+18, ofGetHeight()-15, 8, 8);
     }
 }
 
@@ -177,10 +188,15 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         int blue        = args.json.get("blue", -1).asInt();
         int intensity   = args.json.get("intensity", -1).asInt();
        
-        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && red>=0 && red <256 && green>=0 && green <256 && blue>=0 && blue <256 && intensity>=0 && intensity <256)
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices && red>=0 && red <256 && green>=0 && green <256 && blue>=0 && blue <256 && intensity>=0 && intensity <256)
         {
         
             [bleDeviceMap[deviceIndex].led setLEDColor:[UIColor colorWithRed:red green:green blue:blue alpha:255] withIntensity:ofMap(intensity, 0, 255, 0, 1)];
+        }
+        else
+        {
+            string errorMessage="{\"message\":\"error\",\"type\":\"Set Color failed :: incorrect index\"}";
+            server.send(errorMessage, args.conn.getClientIP());
         }
         
         return;
@@ -190,7 +206,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         int deviceIndex = args.json.get("device", -1).asInt();
         string ipAddress = args.conn.getClientIP();
         
-        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
         {
             if(registeredForButton.find(deviceIndex)==registeredForButton.end())
             {
@@ -209,7 +225,17 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                     }];
                     registeredForButton[deviceIndex]=ipAddress;
                 }
+                else
+                {
+                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for button failed :: ip address already registered for this event\"}";
+                    server.send(errorMessage, ipAddress);
+                }
             }
+        }
+        else
+        {
+            string errorMessage="{\"message\":\"error\",\"type\":\"Register for button failed :: incorrect index\"}";
+            server.send(errorMessage, ipAddress);
         }
         
         return;
@@ -236,9 +262,9 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         int deviceIndex = args.json.get("device", -1).asInt();
         string ipAddress = args.conn.getClientIP();
         
-        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
         {
-            if(registeredForAccelerometer.find(deviceIndex)==registeredForAccelerometer.end())
+            if(registeredForAccelerometer.find(deviceIndex)==registeredForAccelerometer.end() || registeredForAccelerometer[deviceIndex]=="")
             {
                 bool ipPresent = false;
                 for (std::map<int, string>::iterator it=registeredForAccelerometer.begin(); it!=registeredForAccelerometer.end(); it++) {
@@ -249,17 +275,36 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                     }
                 }
                 if(!ipPresent){
-                    bleDeviceMap[deviceIndex].accelerometer.fullScaleRange = MBLAccelerometerRange2G;  // Default: +- 8G
-                    bleDeviceMap[deviceIndex].accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency12_5Hz;
+                    bleDeviceMap[deviceIndex].accelerometer.fullScaleRange = MBLAccelerometerRange8G;  // Default: +- 8G
+                    bleDeviceMap[deviceIndex].accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency6_25Hz;
+                    bleDeviceMap[deviceIndex].accelerometer.autoSleep = NO;
+                    
+                    NSLog(@"accelerometer registered");
                     [bleDeviceMap[deviceIndex].accelerometer.dataReadyEvent startNotificationsWithHandler:^(MBLAccelerometerData *obj, NSError   *error) {
-                        string newMessage="{\"message\":\"accelerometerEvent\",\"x\":\""+ofToString(obj.x)+"\",\"y\":\""+ofToString(obj.y)+"\",\"z\":\""+ofToString(obj.z)+"\"}";
-                       // NSLog(@"accelerometer:%d,%d,%d",obj.x,obj.y,obj.z);
                         
-                        server.send(newMessage, ipAddress);
+                        NSLog(@"%s",registeredForAccelerometer[deviceIndex].c_str());
+                        if(YES)
+                        {
+                            string newMessage="{\"message\":\"accelerometerEvent\",\"x\":\""+ofToString(obj.x)+"\",\"y\":\""+ofToString(obj.y)+"\",\"z\":\""+ofToString(obj.z)+"\"}";
+                            NSLog(@"accelerometer:%d,%d,%d",obj.x,obj.y,obj.z);
+                            
+                            server.send(newMessage, ipAddress);
+                        }
                     }];
+                    
                     registeredForAccelerometer[deviceIndex]=ipAddress;
                 }
+                else
+                {
+                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for accelerometer failed :: ip address already registered for this event\"}";
+                    server.send(errorMessage, ipAddress);
+                }
             }
+        }
+        else
+        {
+            string errorMessage="{\"message\":\"error\",\"type\":\"Register for accelerometer failed :: incorrect index\"}";
+            server.send(errorMessage, ipAddress);
         }
         
         return;
@@ -288,9 +333,9 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         int deviceIndex = args.json.get("device", -1).asInt();
         string ipAddress = args.conn.getClientIP();
         
-        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
         {
-            if(registeredForShake.find(deviceIndex)==registeredForShake.end())
+            if(registeredForShake.find(deviceIndex)==registeredForShake.end() )
             {
                 bool ipPresent = false;
                 for (std::map<int, string>::iterator it=registeredForShake.begin(); it!=registeredForShake.end(); it++) {
@@ -310,7 +355,17 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                     
                     registeredForShake[deviceIndex]=ipAddress;
                 }
+                else
+                {
+                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for shake failed :: ip address already registered for this event\"}";
+                    server.send(errorMessage, ipAddress);
+                }
             }
+        }
+        else
+        {
+            string errorMessage="{\"message\":\"error\",\"type\":\"Register for shake failed :: incorrect index\"}";
+            server.send(errorMessage, ipAddress);
         }
         
         return;
@@ -339,7 +394,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         int deviceIndex = args.json.get("device", -1).asInt();
         string ipAddress = args.conn.getClientIP();
         
-        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
         {
             if(registeredForTemperature.find(deviceIndex)==registeredForTemperature.end())
             {
@@ -370,6 +425,12 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                 }
             }
         }
+        else
+        {
+            string errorMessage="{\"message\":\"error\",\"type\":\"Register for shake failed :: incorrect index\"}";
+            server.send(errorMessage, ipAddress);
+        }
+        
         
         return;
     }
@@ -404,7 +465,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             dcycle =ofClamp(args.json.get("dcycle", 500).asInt(),0,5000);
             pwidth = ofClamp(args.json.get("pwidth",248).asInt(),0,248);
         }
-        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0)
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
         {
             [bleDeviceMap[deviceIndex].hapticBuzzer startHapticWithDutyCycle:dcycle pulseWidth:pwidth completion:nil];
         }

@@ -81,6 +81,7 @@ class ofApp : public ofxiOSApp {
         map<int,string> registeredForAccelerometer;
         map<int,string> registeredForTemperature;
         map<int,string> registeredForShake;
+        int             numOfConnectedDevices;
     
         string delayedMessage="";
         

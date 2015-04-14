@@ -93,14 +93,7 @@ var  gem= (function () {
 				return buttonStateVariable;
 			}
 		}
-		object.getAccelerometerData = function()
-		{
-
-		}
-		object.getTemperatureData = function()
-		{
-			
-		}
+		
 
 		object.setColor = function(deviceNumber,red,green,blue,intensity)
 		{

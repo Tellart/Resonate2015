@@ -166,7 +166,7 @@ void ofApp::onClose( ofxLibwebsockets::Event& args ){
 
 //--------------------------------------------------------------
 void ofApp::onIdle( ofxLibwebsockets::Event& args ){
-    cout<<"on idle"<<endl;
+    //cout<<"on idle"<<endl;
     
 }
 

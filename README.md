@@ -1,7 +1,7 @@
 #Designing connected experiences with BLE 
 
 
-[Workshop destription](http://resonate.io/2015/education/designing-connected-experiences-with-ble/)
+[Workshop description](http://resonate.io/2015/education/designing-connected-experiences-with-ble/)
 
 
 ## How To Get Started
@@ -20,7 +20,7 @@ otherwhise just download this repo from github.
 ######Mac OS X 
 - Navigate to client connector ```cd Resonate2015/clientConnector```
 - Start the webserver with the command: ```python -m SimpleHTTPServer 8000```
-- Open your browser and go to the url ```http://localhost:8000/sample/``` to check that is working.
+- Open your browser and go to the url ```http://localhost:8000/sample/``` to check that it is working.
 
 In the folder clientConnector you can duplicate the _sample_ folder and rename it as you like. 
 

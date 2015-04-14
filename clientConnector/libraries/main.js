@@ -1,7 +1,6 @@
 
-var  gem= (function () {
+var  connector= (function () {
     var instance;
-
  
     function createInstance() {
         var object = new Object();
@@ -31,7 +30,7 @@ var  gem= (function () {
 			if (BrowserDetect.browser == "Firefox") {
 				object.socket = new MozWebSocket(get_appropriate_ws_url(socketAddress));
 			} else {
-				object.socket = new ReconnectingWebSocket(get_appropriate_ws_url("192.168.1.17:9092"));
+				object.socket = new ReconnectingWebSocket(get_appropriate_ws_url(socketAddress));
 			}
 			
 			// open
@@ -93,13 +92,13 @@ var  gem= (function () {
 		}
 		
 		object.getButtonState = function(){
-			if(object.buttonRegistered)
+			if(!object.buttonRegistered)
 			{
 				return -1;
 			}
 			else
 			{
-				return buttonStateVariable;
+				return object.getButtonStateVariable;
 			}
 		}
 		

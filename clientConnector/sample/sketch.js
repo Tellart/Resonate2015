@@ -11,10 +11,10 @@ function draw() {
   textSize(32);
 	fill(0, 102, 153, 51);
 	text("It works!", 10, 30); 
-	
+
  if(gem.getInstance().status=="OPENED" && !started)
   {
-    console.log("registering accelerometer 1");
+   // console.log("registering accelerometer 1");
    // gem.getInstance().registerAccelerometer(0);
     started = true;
   }

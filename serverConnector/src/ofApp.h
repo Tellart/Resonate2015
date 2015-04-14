@@ -7,8 +7,13 @@
 #import <MetaWear/MetaWear.h>
 
 #define NUM_MESSAGES 30 // how many past messages we want to keep
-#define MAX_NUM_OF_DEVICES 16
+#define MAX_NUM_OF_DEVICES 6
 
+struct accValue {
+    int x;
+    int y;
+    int z;
+};
 
 class ofApp : public ofxiOSApp {
 	
@@ -77,11 +82,23 @@ class ofApp : public ofxiOSApp {
         string       bleIPMap[MAX_NUM_OF_DEVICES];
         MBLMetaWear* bleDeviceMap[MAX_NUM_OF_DEVICES];
     
+        map<string,int> idNumberReference;
+    
+        map<int,bool>   accessGranted;
+    
         map<int,string> registeredForButton;
-        map<int,string> registeredForAccelerometer;
         map<int,string> registeredForTemperature;
         map<int,string> registeredForShake;
-        int             numOfConnectedDevices;
+        map<int,string> registeredForTap;
+        map<int,string> registeredForFreeFall;
+    
+        map<int,vector<string> > registeredForAccelerometer;
+        map<int,accValue> accValues;
+    
+        
+    
+    
+        int    numOfConnectedDevices;
     
         string delayedMessage="";
         
@@ -101,7 +118,12 @@ class ofApp : public ofxiOSApp {
         //**BOARD MANAGER**//
         void initStructures();
         void assignIPToDevice(string ip);
+        void assignIPToDevices();
+        void retractIPToDevice(string ip);
         void setColor(int boardNumber,int red, int green, int blue);
+    
+        float timePassedSinceLastSentData = 0;
+        void sendAccelerometerData();
     
 };
 

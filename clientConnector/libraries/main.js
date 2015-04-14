@@ -15,6 +15,8 @@ var  gem= (function () {
         object.accelerometer.y      = 0;
         object.accelerometer.z      = 0;
 
+        object.boardNumber          = -1;
+
 
         object.setupSocket = function(socketAddress){
 			// setup websocket
@@ -38,6 +40,7 @@ var  gem= (function () {
 					
 					object.status = "OPENED";
 				} 
+
 
 				// received message
 				object.socket.onmessage =function got_packet(msg) {
@@ -68,10 +71,16 @@ var  gem= (function () {
 					{
 						console.warn(messageObejct["type"]);
 					}
+					else if(messageObejct["message"] == "bleAssigned")
+					{
+						object.boardNumber = messageObejct["number"];
+					}
 				}
 
 				object.socket.onclose = function(){
 					object.status = "CLOSED";
+					console.warn("connection:"+object.status);
+					object.boardNumber = -1;
 				}
 				object.socket.onerror = function(){
 					object.status = "ERROR";
@@ -111,8 +120,8 @@ var  gem= (function () {
 			var message="{\"message\":\"registerAccelerometer\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);
 		}
-		object.releaseAccelerometer= function(){
-			var message="{\"message\":\"releaseAccelerometer\"}";
+		object.releaseAccelerometer= function(deviceNumber){
+			var message="{\"message\":\"releaseAccelerometer\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);
 		}
 		object.registerTemperature = function(deviceNumber)
@@ -142,10 +151,7 @@ var  gem= (function () {
 			var message="{\"message\":\"releaseButton\"}";
 			this.sendMessage(message);
 		}
-		object.buttonState = function()
-		{
-			
-		}
+		
 		object.sendMessage = function(message){
 			object.socket.send(message);
 		}

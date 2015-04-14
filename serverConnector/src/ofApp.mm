@@ -1,6 +1,4 @@
 #include "ofApp.h"
-
-
 //--------------------------------------------------------------
 void ofApp::setup(){	
     ofxLibwebsockets::ServerOptions options = ofxLibwebsockets::defaultServerOptions();
@@ -11,14 +9,17 @@ void ofApp::setup(){
     
     ofSetFrameRate(12);
     initStructures();
-    //iPhone 1
-    NSArray *whiteList = @[@"AB316079-B6D3-89EA-5C09-080DAA732412",@"E8DA9D39-D32D-CF43-E712-FEDCA7ECA7AE",@"F427F60B-339F-8BDF-30D8-C236D02938BE",@"F427F60B-339F-8BDF-30D8-C236D02938BE",@"5411D6D5-D52F-8E34-D574-2A37CC97F088"];
-   
-    //iPhone 2
-    // NSArray *whiteList = @[@"A8F6BEC0-4EB0-DDED-6EF8-29348E410AD5",@"28B7A6AA-17F3-8610-654E-4FFB29FEF53F",@"29EBC459-2783-1E5D-DADA-9F82D7C67A4F",@"C9D75924-F179-60DF-45FA-E71B7E0AD385",@"10F3E10D-B6A9-B941-F69F-C03152EEBEE2"];
+    //mine  E8DA9D39-D32D-CF43-E712-FEDCA7ECA7AE
+    //zazas AB316079-B6D3-89EA-5C09-080DAA732412
     
-    //iPod Touch
-    //iPod Touch NSArray *whiteList = @[@"D91E5D1A-FC24-378C-7B58-AD466B1CFB2E",@"2A4C3C59-F907-6139-D5F9-68000C530341",@"D407D25F-6787-DA30-712C-ED9D5807ED24",@"B75BECC7-62D4-0813-5A1B-A846FA439499",@"43F9E234-6D1D-0557-4BFF-51105371ECEC"];
+    //iPhone 1 - green
+    NSArray *whiteList = @[@"8809883E-1238-FA57-05B4-6745ED167142",@"29EBC459-2783-1E5D-DADA-9F82D7C67A4F"];//@[@"AB316079-B6D3-89EA-5C09-080DAA732412",@"E8DA9D39-D32D-CF43-E712-FEDCA7ECA7AE",@"F427F60B-339F-8BDF-30D8-C236D02938BE",@"F427F60B-339F-8BDF-30D8-C236D02938BE",@"5411D6D5-D52F-8E34-D574-2A37CC97F088"];
+   
+    //iPhone 2 - white
+    // NSArray *whiteList = @[@"D3FDB030-C0D7-9A21-590A-591A46700A17",@"559EDE87-9652-423E-CC28-5C130F36522D",@"6B326DA4-EDBA-5306-617C-0CA893A00306",];//@"C9D75924-F179-60DF-45FA-E71B7E0AD385",@"10F3E10D-B6A9-B941-F69F-C03152EEBEE2" @"D407D25F-6787-DA30-712C-ED9D5807ED24",
+    
+    //iPod Touch - paper
+    //NSArray *whiteList = @[@"D91E5D1A-FC24-378C-7B58-AD466B1CFB2E",@"1CEDCCC4-3C68-2ECB-C6F4-33346BC77775",@"B75BECC7-62D4-0813-5A1B-A846FA439499",@"19DC488E-F956-BDA2-4AAE-FAEF28114F39",@"30C5C2FB-E62E-06D2-673C-C8B4E2A6C068"];
     
     for(int i = 0; i<[whiteList count]; i++)
     {
@@ -31,7 +32,7 @@ void ofApp::setup(){
         for (int i=0; i<[array count]; i++) {
             MBLMetaWear *device = [array objectAtIndex:i];
             
-            
+           
            if([whiteList indexOfObject:device.identifier.UUIDString]!= NSNotFound)
             {
                 [device connectWithHandler:^(NSError *error) {
@@ -47,22 +48,18 @@ void ofApp::setup(){
                         
                             device.accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency1_56Hz;
                         
-                        
-                        
                             for (int k=0; k<MAX_NUM_OF_DEVICES; k++) {
                                 if(bleDeviceMap[k]!=nil)
                                 {
                                     numOfConnectedDevices++;
                                 }
                             }
-
-                       
                     }
                 }];
               }
             else
             {
-                NSLog(@"device %@",device.identifier.UUIDString);
+                NSLog(@" %@",device.identifier.UUIDString);
             }
           
         }
@@ -135,16 +132,16 @@ void ofApp::gotMemoryWarning(){
 //--------------------------------------------------------------
 void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
     messages.clear();
-    for (int i=0; i<MAX_NUM_OF_DEVICES; i++) {
+   /* for (int i=0; i<MAX_NUM_OF_DEVICES; i++) {
         
     if(bleDeviceMap[i]!=NULL)
     {
         NSLog(@"started %@",bleDeviceMap[i].identifier);
-        /*
-        [bleDeviceMap[i].accelerometer.rmsDataReadyEvent startNotificationsWithHandler:^(id obj, NSError *error) {
+    
+        //[bleDeviceMap[i].accelerometer.rmsDataReadyEvent startNotificationsWithHandler:^(id obj, NSError *error) {
            
-             NSLog(@"device num %@,%@",bleDeviceMap[i].identifier, obj);
-        }];*/
+          //   NSLog(@"device num %@,%@",bleDeviceMap[i].identifier, obj);
+        //}];
         bleDeviceMap[i].accelerometer.fullScaleRange = MBLAccelerometerRange8G;  // Default: +- 8G
         bleDeviceMap[i].accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency100Hz;
         [bleDeviceMap[i].accelerometer.dataReadyEvent startNotificationsWithHandler:^(MBLAccelerometerData *acceleration, NSError *error) {
@@ -154,7 +151,7 @@ void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
            
         }];
     }
-    }
+    }*/
 }
 /****************
  ******
@@ -492,11 +489,16 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                    
                     registeredForTemperature[deviceIndex]=ipAddress;
                 }
+                else
+                {
+                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for temperature failed :: already registered\"}";
+                    server.send(errorMessage, ipAddress);
+                }
             }
         }
         else
         {
-            string errorMessage="{\"message\":\"error\",\"type\":\"Register for shake failed :: incorrect index\"}";
+            string errorMessage="{\"message\":\"error\",\"type\":\"Register for temperature :: incorrect index\"}";
             server.send(errorMessage, ipAddress);
         }
         
@@ -522,7 +524,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             }
         }
     }
-    else if(message == "registerForFreeFall")
+    else if(message == "registerFreeFall")
     {
         int deviceIndex = args.json.get("device", -1).asInt();
         string ipAddress = args.conn.getClientIP();
@@ -543,13 +545,18 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                    
                     [ bleDeviceMap[deviceIndex].accelerometer.freeFallEvent startNotificationsWithHandler:^(MBLEvent *freeFallEvent, NSError *error) {
 
-                        string newMessage = "{\"message\":\"registerForFreeFall\"}";
+                        string newMessage = "{\"message\":\"freeFallEvent\"}";
                         
                         server.send(newMessage, ipAddress);
                         
                     }];
                     
                     registeredForFreeFall[deviceIndex]=ipAddress;
+                }
+                else
+                {
+                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for free fall failed :: already registered\"}";
+                    server.send(errorMessage, ipAddress);
                 }
             }
         }
@@ -558,17 +565,90 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             string errorMessage="{\"message\":\"error\",\"type\":\"Register for free fall failed :: incorrect index\"}";
             server.send(errorMessage, ipAddress);
         }
-        
-        
+
         return;
     }
     else if(message == "releaseFreeFall")
     {
         int deviceIndex = args.json.get("device", -1).asInt();
         string ipAddress = args.conn.getClientIP();
+
+        for (std::map<int, string>::iterator it=registeredForFreeFall.begin(); it!=registeredForFreeFall.end(); it++) {
+            string ipTmp=it->second;
+            if(ipTmp==ipAddress)
+            {
+                [bleDeviceMap[it->first].accelerometer.freeFallEvent stopNotifications];
+                registeredForFreeFall.erase(deviceIndex);
+                registeredForFreeFall.erase(it, it);
+                registeredForFreeFall.erase(it->first);
+                break;
+            }
+        }
+    } else if(message == "registerOrientation")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
         
-        
-        
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
+        {
+            if(registeredForOrientation.find(deviceIndex)==registeredForOrientation.end())
+            {
+                bool ipPresent = false;
+                for (std::map<int, string>::iterator it=registeredForOrientation.begin(); it!=registeredForOrientation.end(); it++) {
+                    string ipTmp=it->second;
+                    if(ipTmp==ipAddress)
+                    {
+                        ipPresent=true;
+                    }
+                }
+                if(!ipPresent){
+                   
+                    [bleDeviceMap[deviceIndex].accelerometer.orientationEvent startNotificationsWithHandler:^(id obj, NSError *error) {
+                        MBLOrientationData *data = obj;
+                        string orientation = "";
+                       
+                        switch (data.orientation) {
+                            case MBLAccelerometerOrientationPortrait:
+                                orientation = "Portrait";
+                                break;
+                            case MBLAccelerometerOrientationPortraitUpsideDown:
+                                orientation = "PortraitUpsideDown";
+                                break;
+                            case MBLAccelerometerOrientationLandscapeLeft:
+                                orientation = "LandscapeLeft";
+                                break;
+                            case MBLAccelerometerOrientationLandscapeRight:
+                                orientation = "LandscapeRight";
+                                break;
+                        }
+                        string newMessage = "{\"message\":\"orientationEvent\",\"value\":\""+orientation+"\"}";
+                        
+                        server.send(newMessage, ipAddress);
+                        
+                    }];
+                    
+                    registeredForOrientation[deviceIndex]=ipAddress;
+                }
+                else
+                {
+                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for orientation failed :: already registered\"}";
+                    server.send(errorMessage, ipAddress);
+                }
+            }
+        }
+        else
+        {
+            string errorMessage="{\"message\":\"error\",\"type\":\"Register for orientation failed :: incorrect index\"}";
+            server.send(errorMessage, ipAddress);
+        }
+
+        return;
+    }
+    else if(message == "releaseOrientation")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+
         for (std::map<int, string>::iterator it=registeredForFreeFall.begin(); it!=registeredForFreeFall.end(); it++) {
             string ipTmp=it->second;
             if(ipTmp==ipAddress)
@@ -585,17 +665,21 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
     {
         int deviceIndex = args.json.get("device", -1).asInt();
         string ipAddress = args.conn.getClientIP();
-        uint8_t dcycle = 500;
-        uint16_t pwidth = 248;
-        
-        if(args.json.get("hasOptions",-1).asBool())
+        uint8_t dcycle =248;
+        uint16_t pwidth = (int)ofClamp(args.json.get("withLenght", 500).asInt(),0,5000);
+        printf(" what %d\n",dcycle);
+       /* if(args.json.get("hasOptions",-1).asBool())
         {
             dcycle =ofClamp(args.json.get("dcycle", 500).asInt(),0,5000);
             pwidth = ofClamp(args.json.get("pwidth",248).asInt(),0,248);
-        }
+        }*/
         if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
         {
             [bleDeviceMap[deviceIndex].hapticBuzzer startHapticWithDutyCycle:dcycle pulseWidth:pwidth completion:nil];
+        }
+        else {
+            string errorMessage="{\"message\":\"error\",\"type\":\"Make vibrate failed :: incorrect index\"}";
+            server.send(errorMessage, ipAddress);
         }
     }
 }
@@ -620,7 +704,6 @@ void ofApp::initStructures(){
     for (int i=0; i<MAX_NUM_OF_DEVICES; i++) {
         bleIPMap[i] = "";
     }
-    
 }
 //--------------------------------------------------------------
 void ofApp::assignIPToDevice(string ip){

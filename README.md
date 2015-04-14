@@ -1,7 +1,7 @@
 #Designing connected experiences with BLE 
 
 
-[Workshop description](http://resonate.io/2015/education/designing-connected-experiences-with-ble/)
+[Workshop destription](http://resonate.io/2015/education/designing-connected-experiences-with-ble/)
 
 
 ## How To Get Started
@@ -20,7 +20,7 @@ otherwhise just download this repo from github.
 ######Mac OS X 
 - Navigate to client connector ```cd Resonate2015/clientConnector```
 - Start the webserver with the command: ```python -m SimpleHTTPServer 8000```
-- Open your browser and go to the url ```http://localhost:8000/sample/``` to check that it is working.
+- Open your browser and go to the url ```http://localhost:8000/sample/``` to check that is working.
 
 In the folder clientConnector you can duplicate the _sample_ folder and rename it as you like. 
 
@@ -33,31 +33,35 @@ The server is not necessary but just nice to have, you can directly open _index.
 
 ## Reference
 <p align="center" >
-  <img src="https://raw.github.com/Tellart/Resonate2015/system.png" alt="AFNetworking" title="AFNetworking">
+  <img src="serverConnector/system.png" alt="AFNetworking" title="AFNetworking">
 </p>
 
 
 
-### `gem` object
+### `connector` object
 
 The gem object is a singleton that abstract the controller of the ble modules. 
 To retrieve the object call `getInstance` on gem.
 
 ```javascript
-gem.getInstance()
+connector.getInstance()
 ```
 
 
 ##### Properties
+
 `status`  can be __INIT__, __OPENED__, __CLOSED__, __ERROR__
 
 ```javascript
-if(gem.getInstance().status=="OPENED")
+if(connector.getInstance().status=="OPENED")
 {
 	background(12,255,23);
 }
 
 ```
+---
+`boardNumber` 
+board number is giving the reference of the device that is associated with your ip address. The range will span between 0 and 4.
 
 
 
@@ -73,6 +77,28 @@ __actuators methods__
 `makeVibrate(deviceNumber)` _deviceNumber_ is an integer between 0 and 4, it will create a vibration
 
 __sensors methods__ 
+
+Sensors are organized with an observer pattern logic. 
+You can register to observe a sensor, when done you can release it.
+
+`registerButton`  
+`releaseButton`  
+
+`registerTemperature`  
+`release Temperature`
+
+`registerShake`  
+`releaseShake`
+
+`registerFreeFall`  
+`releaseFreeFall`
+
+`registerOrientation`  
+`releaseOrientation`
+
+`registerTap`  
+`releaseTap`
+
 
 
 

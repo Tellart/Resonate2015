@@ -5,7 +5,7 @@ var circleSize=5;
 
 function setup() {
    createCanvas(windowWidth, windowHeight);
-   connector.getInstance().setupSocket("192.168.1.12:9092");
+   connector.getInstance().setupSocket("192.168.1.17:9092");
    frameRate(30); 
 }
 
@@ -26,7 +26,7 @@ function draw() {
   }
 
   myButton = connector.getInstance().getButtonState();
-  if (myButton != -1) console.log("BUTTON!");
+  //if (myButton != -1) console.log("BUTTON!");
   circleSize += myButton*5;
 
   ellipse(100,100,circleSize,circleSize);

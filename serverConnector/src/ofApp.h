@@ -91,6 +91,7 @@ class ofApp : public ofxiOSApp {
         map<int,string> registeredForShake;
         map<int,string> registeredForTap;
         map<int,string> registeredForFreeFall;
+        map<int,string> registeredForOrientation;
     
         map<int,vector<string> > registeredForAccelerometer;
         map<int,accValue> accValues;

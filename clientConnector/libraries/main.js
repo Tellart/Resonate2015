@@ -9,10 +9,16 @@ var  connector= (function () {
         object.status 			   	= "INIT";
         object.buttonStateVariable 	= true;
         object.buttonRegistered   	= -1;
+
         object.accelerometer        = {};
         object.accelerometer.x      = 0;
         object.accelerometer.y      = 0;
         object.accelerometer.z      = 0;
+
+        object.temperature          = "";
+        object.freeFall             = false;
+        object.tap					= false;
+        object.orientation			= "";
 
         object.boardNumber          = -1;
 
@@ -66,7 +72,28 @@ var  connector= (function () {
 						object.accelerometer.z = messageObejct["z"];
 						
 					}
-					else if(messageObejct["message"] == "error")
+					else if(messageObejct["message"] == "freeFallEvent")
+					{
+						object.freeFall = true;
+						window.setTimeout(function(){
+								object.freeFall = false;
+						},500);
+						
+					}
+					else if(messageObejct["message"] == "orientationEvent")
+					{
+						object.orientation = messageObejct["value"];
+						
+						
+					}
+					else if(messageObejct["message"] == "tapEvent")
+					{
+						object.tap = true;
+						window.setTimeout(function(){
+								object.tap = false;
+						},100);
+						
+					}else if(messageObejct["message"] == "error")
 					{
 						console.warn(messageObejct["type"]);
 					}
@@ -141,8 +168,39 @@ var  connector= (function () {
 			var message="{\"message\":\"releaseShake\"}";
 			this.sendMessage(message);
 		}
-		object.makeVibrate= function(deviceNumber){
-			var message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\"}";
+		object.registerFreeFall = function(deviceNumber)
+		{
+			var message="{\"message\":\"registerFreeFall\",\"device\":\""+deviceNumber+"\"}";
+			this.sendMessage(message);
+		}
+		object.releaseFreeFall= function(){
+			var message="{\"message\":\"releaseFreeFall\"}";
+			this.sendMessage(message);
+		}
+		object.registerTap = function(deviceNumber)
+		{
+			var message="{\"message\":\"registerTap\",\"device\":\""+deviceNumber+"\"}";
+			this.sendMessage(message);
+		}
+		object.releaseTap= function(){
+			var message="{\"message\":\"releaseTap\"}";
+			this.sendMessage(message);
+		}
+		object.registerOrientation = function(deviceNumber)
+		{
+			var message="{\"message\":\"registerOrientation\",\"device\":\""+deviceNumber+"\"}";
+			this.sendMessage(message);
+		}
+		object.releaseOrientation= function(){
+			var message="{\"message\":\"releaseOrientation\"}";
+			this.sendMessage(message);
+		}
+		object.makeVibrate= function(deviceNumber,length){
+			if(length=="" || length==undefined)
+			{
+				length=500;
+			}
+			var message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\",\"withLenght\":\""+length+"\"}";
 			this.sendMessage(message);
 		}
 

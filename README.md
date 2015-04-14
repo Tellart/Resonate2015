@@ -10,9 +10,8 @@
 Git user can follow these steps in the terminal:
 
 - navigate to the location where you want to copy the repository;
-- type ```
-git clone https://github.com/Tellart/Resonate2015.git
-```
+- type ```git clone https://github.com/Tellart/Resonate2015.git```
+
 
 otherwhise just download this repo from github.
 

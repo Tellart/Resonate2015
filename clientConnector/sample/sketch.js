@@ -1,7 +1,9 @@
 var started=false;
 
-var myButton=-1;
-var circleSize=5;
+var myButton=false;
+var circleSize=20; 
+
+var device = 0;
 
 function setup() {
    createCanvas(windowWidth, windowHeight);
@@ -19,15 +21,24 @@ function draw() {
  if(connector.getInstance().status=="OPENED" && !started)
   {
     console.log("registering button");
-    connector.getInstance().registerButton(0);
+    connector.getInstance().registerButton(device);
     started = true;
     
-    connector.getInstance().makeVibrate(0);
+    connector.getInstance().makeVibrate(device);
   }
 
+<<<<<<< Updated upstream
   myButton = connector.getInstance().getButtonState();
   //if (myButton != -1) console.log("BUTTON!");
   circleSize += myButton*5;
+=======
+  myButton = connector.getInstance().getButtonState(); //true false
+  if (myButton) {
+    circleSize += 5;
+    console.log(circleSize);
+  }
+  else console.log(myButton);
+>>>>>>> Stashed changes
 
   ellipse(100,100,circleSize,circleSize);
 

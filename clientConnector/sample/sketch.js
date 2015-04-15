@@ -15,13 +15,13 @@ function setup() {
 
 function draw() {
   background(255);
-  textSize(32);
+  textSize(24);
   fill(0);
   noStroke();
 
 if(connector.getInstance().status=="RUNNING" && !started)
   {
-    console.log("registering orientation");
+    console.log("registering...");
     connector.getInstance().registerButton(myDevice);
     connector.getInstance().registerOrientation(myDevice);
     connector.getInstance().registerTemperature(myDevice);
@@ -29,18 +29,19 @@ if(connector.getInstance().status=="RUNNING" && !started)
     connector.getInstance().registerFreeFall(myDevice);
     connector.getInstance().registerTap(myDevice);
 
+    console.log("done");
     connector.getInstance().makeVibrate(myDevice);
     started = true;
   }
 
-  text("Device: "+myDevice, 20, 50);
-  text("Status: "+connector.getInstance().status, 20,150)
-  text("Button: "+connector.getInstance().buttonState, 20, 200);
-  text("Temperature: "+connector.getInstance().temperature, 20, 250);
-  text("Orientation: "+connector.getInstance().orientation, 20, 300);
-  text("Shake: "+connector.getInstance().shaked, 20, 350);
-  text("Tap: "+connector.getInstance().tap, 20, 400);
-  text("Free Fall: "+connector.getInstance().freeFall, 20, 450);
+  text("Device: "+myDevice, 20, 40);
+  text("Status: "+connector.getInstance().status, 20,120)
+  text("Button: "+connector.getInstance().buttonState, 20, 160);
+  text("Temperature: "+connector.getInstance().temperature, 20, 200);
+  text("Orientation: "+connector.getInstance().orientation, 20, 240);
+  text("Shake: "+connector.getInstance().shaked, 20, 280);
+  text("Tap: "+connector.getInstance().tap, 20, 320);
+  text("Free Fall: "+connector.getInstance().freeFall, 20, 360);
 
 if (counter%200 == 0){
   connector.getInstance().readBatteryLevel();
@@ -48,8 +49,8 @@ if (counter%200 == 0){
   counter = 0;
 }
 
-  text("Battery Level: "+connector.getInstance().batteryLevel, 20, 550);
-  text("Signal Strength: "+connector.getInstance().rssi, 20, 600);
+  text("Battery Level: "+connector.getInstance().batteryLevel, 20, 400);
+  text("Signal Strength: "+connector.getInstance().rssi, 20, 440);
 
 }
 

@@ -181,7 +181,21 @@ var  connector= (function () {
 				object.status = "ERROR";
 			}
 		}
-
+		object.flashColor = function(deviceNumber,red,green,blue,numberOfFlashes)
+		{
+			if(arguments.length == 5)
+			{	
+				
+				var message="{\"message\":\"flashColor\",\"device\":\""+deviceNumber+"\",\"red\":\""+red+"\",\"blue\":\""+blue+"\",\"green\":\""+green+"\",\"numberOfFlashes\":\""+numberOfFlashes+"\"}";
+				this.sendMessage(message);
+				
+			}
+			else
+			{
+				console.warn("flashColor requires 5 variables");
+				
+			}
+		}
 
 		object.setColor = function(deviceNumber,red,green,blue,intensity)
 		{

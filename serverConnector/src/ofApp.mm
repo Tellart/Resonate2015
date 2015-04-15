@@ -253,6 +253,26 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         
         return;
     }
+    else if(message=="flashColor")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        int red         = args.json.get("red", -1).asInt();
+        int green       = args.json.get("green", -1).asInt();
+        int blue        = args.json.get("blue", -1).asInt();
+        int numberOfFlashes   = ofClamp(args.json.get("numberOfFlashes", -1).asInt(),0,10);
+        
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices && red>=0 && red <256 && green>=0 && green <256 && blue>=0 && blue <256 )
+        {
+            [bleDeviceMap[deviceIndex].led flashLEDColor:[UIColor colorWithRed:red green:green blue:blue alpha:255] withIntensity:1 numberOfFlashes:numberOfFlashes];
+        }
+        else
+        {
+            string errorMessage="{\"message\":\"error\",\"type\":\"Number of flashes failed :: incorrect index\"}";
+            server.send(errorMessage, args.conn.getClientIP());
+        }
+        
+        return;
+    }
     else if(message=="readRSSI")
     {
         int deviceIndex = args.json.get("device", -1).asInt();
@@ -292,7 +312,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         {
             if(registeredForButton.find(deviceIndex)==registeredForButton.end())
             {
-                if(ipAddress == bleIPMap[deviceIndex] || (accessGranted[deviceIndex] || !accessRequestNeeded) )
+                if((ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex]) || !accessRequestNeeded )
                 {
                     bool ipPresent = false;
                     for (std::map<int, string>::iterator it=registeredForButton.begin(); it!=registeredForButton.end(); it++) {
@@ -358,7 +378,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             
             if(registeredForShake.find(deviceIndex)==registeredForShake.end() )
             {
-                if(ipAddress == bleIPMap[deviceIndex] || (accessGranted[deviceIndex] || !accessRequestNeeded))
+                if((ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex]) || !accessRequestNeeded)
                 {
                     bool ipPresent = false;
                     for (std::map<int, string>::iterator it=registeredForShake.begin(); it!=registeredForShake.end(); it++) {
@@ -427,7 +447,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         {
             if(registeredForTap.find(deviceIndex)==registeredForTap.end() )
             {
-                if(ipAddress == bleIPMap[deviceIndex] || (accessGranted[deviceIndex] || !accessRequestNeeded) )
+                if((ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex]) || !accessRequestNeeded )
                 {
                     bool ipPresent = false;
                     for (std::map<int, string>::iterator it=registeredForTap.begin(); it!=registeredForTap.end(); it++) {
@@ -496,7 +516,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         {
             if(registeredForTemperature.find(deviceIndex)==registeredForTemperature.end())
             {
-                if(ipAddress == bleIPMap[deviceIndex] || (accessGranted[deviceIndex] || !accessRequestNeeded) )
+                if((ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex]) || !accessRequestNeeded )
                 {
                     bool ipPresent = false;
                     for (std::map<int, string>::iterator it=registeredForTemperature.begin(); it!=registeredForTemperature.end(); it++) {
@@ -775,12 +795,53 @@ void ofApp::retractIPToDevice(string ip){
         }
     }
     //deregister for Temperature
+    for (std::map<int, string>::iterator it=registeredForTemperature.begin(); it!=registeredForTemperature.end(); it++) {
+        string ipTmp=it->second;
+        if(ipTmp==ip)
+        {
+            [bleDeviceMap[it->first].temperature.dataReadyEvent stopNotifications];
+            registeredForTemperature.erase(it, it);
+            registeredForTemperature.erase(it->first);
+            break;
+        }
+    }
     
     //deregister for Tap
+    for (std::map<int, string>::iterator it=registeredForTap.begin(); it!=registeredForTap.end(); it++) {
+        string ipTmp=it->second;
+        if(ipTmp==ip)
+        {
+            [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];
+          
+            registeredForTap.erase(it, it);
+            registeredForTap.erase(it->first);
+            break;
+        }
+    }
     
     //deregister for Shake
+    for (std::map<int, string>::iterator it=registeredForShake.begin(); it!=registeredForShake.end(); it++) {
+        string ipTmp=it->second;
+        if(ipTmp==ip)
+        {
+            [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];
+            registeredForShake.erase(it, it);
+            registeredForShake.erase(it->first);
+            break;
+        }
+    }
     
-    //deregister for 
+    //deregister for Orientation
+    for (std::map<int, string>::iterator it=registeredForOrientation.begin(); it!=registeredForOrientation.end(); it++) {
+        string ipTmp=it->second;
+        if(ipTmp==ip)
+        {
+            [bleDeviceMap[it->first].accelerometer.orientationEvent stopNotifications];
+            registeredForOrientation.erase(it, it);
+            registeredForOrientation.erase(it->first);
+            break;
+        }
+    }
     
 }
 //--------------------------------------------------------------

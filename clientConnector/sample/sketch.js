@@ -43,7 +43,7 @@ if(connector.getInstance().status=="RUNNING" && !started)
   text("Tap: "+connector.getInstance().tap, 20, 320);
   text("Free Fall: "+connector.getInstance().freeFall, 20, 360);
 
-if (counter%200 == 0){
+if (counter%100 == 0){
   connector.getInstance().readBatteryLevel();
   connector.getInstance().readRSSI();
   counter = 0;
@@ -52,6 +52,7 @@ if (counter%200 == 0){
   text("Battery Level: "+connector.getInstance().batteryLevel, 20, 400);
   text("Signal Strength: "+connector.getInstance().rssi, 20, 440);
 
+  counter++;
 }
 
 function windowResized() {

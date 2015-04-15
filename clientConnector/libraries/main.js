@@ -30,7 +30,7 @@ var  connector= (function () {
 			// e.g. https://mygreathost:9099 = wss://mygreathost:9099
 			if(socketAddress=="")
 			{
-				socketAddress = "192.168.1.17:9092";
+				socketAddress = "192.168.1.:9092";
 			}
 
 			if (BrowserDetect.browser == "Firefox") {
@@ -192,7 +192,7 @@ var  connector= (function () {
 			this.sendMessage(message);
 		}
 		object.releaseOrientation= function(){
-			var message="{\"message\":\"releaseOrientation\"}";
+			var message="{\"message\":\"releaseOrientation\",\"device\":\""+object.boardNumber+"\"}";
 			this.sendMessage(message);
 		}
 		object.makeVibrate= function(deviceNumber,length){

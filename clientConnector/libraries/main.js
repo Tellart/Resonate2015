@@ -22,6 +22,9 @@ var  connector= (function () {
         object.tapRegistered 		 = false;
         object.tap					 = false;
 
+        object.shakeRegistered		 = false;
+        object.shaked 				 = false;
+
         object.orientationRegistered = false;
         object.orientation			 = "";
 
@@ -54,7 +57,7 @@ var  connector= (function () {
 					console.log(msg);
 					messageObject = JSON.parse(msg.data);
 
-					if(messageObejct["message"]=="buttonEvent")
+					if(messageObject["message"]=="buttonEvent")
 					{
 						if(messageObject["value"]==0 || messageObject["value"]=="0")
 
@@ -166,18 +169,6 @@ var  connector= (function () {
 				object.status = "ERROR";
 			}
 		}
-		/*
-		object.getButtonState = function(){
-			if(!object.buttonRegistered)
-			{
-				return -1;
-			}
-			else
-			{
-				return object.buttonState;
-			}
-		}
-		*/
 
 		object.setColor = function(deviceNumber,red,green,blue,intensity)
 		{
@@ -239,10 +230,7 @@ var  connector= (function () {
 			this.sendMessage(message);
 
 		}
-		object.shaked= function()
-		{
-			
-		}
+
 		object.releaseShake= function(){
 
 			var message="{\"message\":\"releaseShake\"}";

@@ -22,14 +22,26 @@ if(connector.getInstance().status=="RUNNING" && !started)
     console.log("registering orientation");
     connector.getInstance().registerButton(myDevice);
     connector.getInstance().registerOrientation(myDevice);
-    
+    connector.getInstance().registerTemperature(myDevice);
+    connector.getInstance().registerShake(myDevice);
+    connector.getInstance().registerFreeFall(myDevice);
+    connector.getInstance().registerTap(myDevice);
+
     connector.getInstance().makeVibrate(myDevice);
     started = true;
   }
 
   text("Device: "+myDevice, 20, 50);
-  text(connector.getInstance().orientation, 20, 100);
-  text(connector.getInstance().buttonState, 20, 150);
+  text("Status: "+connector.getInstance().status, 20,150)
+  text("Button: "+connector.getInstance().buttonState, 20, 200);
+  text("Temperature: "+connector.getInstance().temperature, 20, 250);
+  text("Orientation: "+connector.getInstance().orientation, 20, 300);
+  text("Shake: "+connector.getInstance().shaked, 20, 350);
+  text("Tap: "+connector.getInstance().tap, 20, 400);
+  text("Free Fall: "+connector.getInstance().freeFall, 20, 450);
+  //text("Battery: "+connector.getInstance().battery, 20, 500);
+  //text("Range: "+connector.getInstance().rssi, 20, 550);
+
 }
 
 function windowResized() {
@@ -40,5 +52,6 @@ function drawOrientation(){
   console.log(connector.getInstance().orientation);
   rect(width/2,height/2,400,150);
 }
+
 
 

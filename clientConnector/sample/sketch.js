@@ -3,49 +3,42 @@ var started=false;
 var myButton=false;
 var circleSize=20; 
 
-var device = 0;
+var myDevice = 1;
 
 function setup() {
    createCanvas(windowWidth, windowHeight);
-   connector.getInstance().setupSocket("192.168.1.17:9092");
+   connector.getInstance().setupSocket("10.0.0.5:9092");
    frameRate(30); 
 }
 
 function draw() {
   background(255);
   textSize(32);
-	fill(0, 102, 153, 51);
-	text("It works!", 10, 30); 
+  fill(0);
+  noStroke();
 
-	
- if(connector.getInstance().status=="OPENED" && !started)
+if(connector.getInstance().status=="RUNNING" && !started)
   {
-    console.log("registering button");
-    connector.getInstance().registerButton(device);
-    started = true;
+    console.log("registering orientation");
+    connector.getInstance().registerButton(myDevice);
+    connector.getInstance().registerOrientation(myDevice);
     
-    connector.getInstance().makeVibrate(device);
+    connector.getInstance().makeVibrate(myDevice);
+    started = true;
   }
 
-<<<<<<< Updated upstream
-  myButton = connector.getInstance().getButtonState();
-  //if (myButton != -1) console.log("BUTTON!");
-  circleSize += myButton*5;
-=======
-  myButton = connector.getInstance().getButtonState(); //true false
-  if (myButton) {
-    circleSize += 5;
-    console.log(circleSize);
-  }
-  else console.log(myButton);
->>>>>>> Stashed changes
-
-  ellipse(100,100,circleSize,circleSize);
-
-  //ellipse(100,100,clamp(map(connector.getInstance().accelerometer.y,-1024,1024,0,100),0,100),clamp(map(connector.getInstance().accelerometer.y,-1024,1024,0,100),0,100));
+  text("Device: "+myDevice, 20, 50);
+  text(connector.getInstance().orientation, 20, 100);
+  text(connector.getInstance().buttonState, 20, 150);
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
+function drawOrientation(){
+  console.log(connector.getInstance().orientation);
+  rect(width/2,height/2,400,150);
+}
+
 

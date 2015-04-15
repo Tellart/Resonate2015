@@ -52,16 +52,16 @@ var  connector= (function () {
 				// received message
 				object.socket.onmessage =function got_packet(msg) {
 					console.log(msg);
-					messageObejct = JSON.parse(msg.data);
-					if(messageObejct["message"]=="buttonEvent")
+					messageObject = JSON.parse(msg.data);
+					if(messageObject["message"]=="buttonEvent")
 					{
-						if(msg.data["value"]==0)
+						if(messageObject["value"]==0)
 						{
-							object.buttonStateVariable=false;
+							object.buttonState=false;
 						}
 						else
 						{
-							object.buttonStateVariable=true;
+							object.buttonState=true;
 							
 							
 						}
@@ -74,7 +74,7 @@ var  connector= (function () {
 						}
 						return;
 					}
-					else if(messageObejct["message"] == "freeFallEvent")
+					else if(messageObject["message"] == "freeFallEvent")
 					{
 						object.freeFall = true;
 						window.setTimeout(function(){
@@ -88,9 +88,9 @@ var  connector= (function () {
 							
 						}
 					}
-					else if(messageObejct["message"] == "orientationEvent")
+					else if(messageObject["message"] == "orientationEvent")
 					{
-						object.orientation = messageObejct["value"];
+						object.orientation = messageObject["value"];
 
 						try{
 					        orientationChanged(object.orientation);
@@ -99,11 +99,11 @@ var  connector= (function () {
 						{
 							
 						}
-					}else if(messageObejct["message"] == "temperatureEvent")
+					}else if(messageObject["message"] == "temperatureEvent")
 					{
-						object.temperature = messageObejct["value"];
+						object.temperature = messageObject["value"];
 					}
-					else if(messageObejct["message"] == "tapEvent")
+					else if(messageObject["message"] == "tapEvent")
 					{
 						object.tap = true;
 						window.setTimeout(function(){
@@ -118,7 +118,7 @@ var  connector= (function () {
 							
 						}
 					}
-					else if(messageObejct["message"] == "shakeEvent")
+					else if(messageObject["message"] == "shakeEvent")
 					{
 						object.shaked = true;
 						window.setTimeout(function(){
@@ -132,14 +132,14 @@ var  connector= (function () {
 						{
 							
 						}
-					}else if(messageObejct["message"] == "error")
+					}else if(messageObject["message"] == "error")
 					{
-						console.warn(messageObejct["type"]);
+						console.warn(messageObject["type"]);
 					}
-					else if(messageObejct["message"] == "bleAssigned")
+					else if(messageObject["message"] == "bleAssigned")
 					{
 						object.status = "RUNNING"
-						object.boardNumber = messageObejct["number"];
+						object.boardNumber = messageObject["number"];
 						try{
 					        initDevice(object.boardNumber);
 						}
@@ -164,7 +164,7 @@ var  connector= (function () {
 				object.status = "ERROR";
 			}
 		}
-		
+		/*
 		object.getButtonState = function(){
 			if(!object.buttonRegistered)
 			{
@@ -175,7 +175,7 @@ var  connector= (function () {
 				return object.getButtonStateVariable;
 			}
 		}
-		
+		*/
 
 		object.setColor = function(deviceNumber,red,green,blue,intensity)
 		{
@@ -311,11 +311,11 @@ var  connector= (function () {
 			var message;
 			if(arguments.length==3)
 			{
-				message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\",\"withLenght\":\""+length+"\",\"withAmplitude\":\""+amplitude+"\"}";
+				message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\",\"withLength\":\""+length+"\",\"withAmplitude\":\""+amplitude+"\"}";
 			}
 			else
 			{
-				message="{\"message\":\"makeVibrate\",\"device\":\""+object.boardNumber+"\",\"withLenght\":\""+arguments[0]+"\",\"withAmplitude\":\""+arguments[1]+"\"}";	
+				message="{\"message\":\"makeVibrate\",\"device\":\""+object.boardNumber+"\",\"withLength\":\""+arguments[0]+"\",\"withAmplitude\":\""+arguments[1]+"\"}";	
 			}
 			console.log(message);
 			this.sendMessage(message);

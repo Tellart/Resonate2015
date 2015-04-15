@@ -233,24 +233,32 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         {
             if(registeredForButton.find(deviceIndex)==registeredForButton.end())
             {
-                bool ipPresent = false;
-                for (std::map<int, string>::iterator it=registeredForButton.begin(); it!=registeredForButton.end(); it++) {
-                    string ipTmp=it->second;
-                    if(ipTmp==ipAddress)
-                    {
-                        ipPresent=true;
+                if(ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex])
+                {
+                    bool ipPresent = false;
+                    for (std::map<int, string>::iterator it=registeredForButton.begin(); it!=registeredForButton.end(); it++) {
+                        string ipTmp=it->second;
+                        if(ipTmp==ipAddress)
+                        {
+                            ipPresent=true;
+                        }
                     }
-                }
-                if(!ipPresent){
-                    [bleDeviceMap[deviceIndex].mechanicalSwitch.switchUpdateEvent startNotificationsWithHandler:^(MBLNumericData* obj, NSError   *error) {
-                        string newMessage="{\"message\":\"buttonEvent\",\"value\":\""+ofToString([obj.value integerValue])+"\"}";
-                        server.send(newMessage, ipAddress);
-                    }];
-                    registeredForButton[deviceIndex]=ipAddress;
+                    if(!ipPresent){
+                        [bleDeviceMap[deviceIndex].mechanicalSwitch.switchUpdateEvent startNotificationsWithHandler:^(MBLNumericData* obj, NSError   *error) {
+                            string newMessage="{\"message\":\"buttonEvent\",\"value\":\""+ofToString([obj.value integerValue])+"\"}";
+                            server.send(newMessage, ipAddress);
+                        }];
+                        registeredForButton[deviceIndex]=ipAddress;
+                    }
+                    else
+                    {
+                        string errorMessage="{\"message\":\"error\",\"type\":\"Register for button failed :: ip address already registered for this event\"}";
+                        server.send(errorMessage, ipAddress);
+                    }
                 }
                 else
                 {
-                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for button failed :: ip address already registered for this event\"}";
+                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for button failed :: permission denied, board number:"+ofToString(deviceIndex)+"\"}";
                     server.send(errorMessage, ipAddress);
                 }
             }
@@ -620,16 +628,16 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                        
                         switch (data.orientation) {
                             case MBLAccelerometerOrientationPortrait:
-                                orientation = "Portrait";
-                                break;
-                            case MBLAccelerometerOrientationPortraitUpsideDown:
-                                orientation = "PortraitUpsideDown";
-                                break;
-                            case MBLAccelerometerOrientationLandscapeLeft:
                                 orientation = "LandscapeLeft";
                                 break;
-                            case MBLAccelerometerOrientationLandscapeRight:
+                            case MBLAccelerometerOrientationPortraitUpsideDown:
                                 orientation = "LandscapeRight";
+                                break;
+                            case MBLAccelerometerOrientationLandscapeLeft:
+                                orientation = "PortraitUpsideDown";
+                                break;
+                            case MBLAccelerometerOrientationLandscapeRight:
+                                orientation = "Portrait";
                                 break;
                         }
                         string newMessage = "{\"message\":\"orientationEvent\",\"value\":\""+orientation+"\"}";
@@ -678,7 +686,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         string ipAddress = args.conn.getClientIP();
         //uint8_t dcycle =248;
         uint8_t dcycle =  (int)ofClamp(args.json.get("withAmplitude", 248).asInt(),0,248);
-        uint16_t pwidth = (int)ofClamp(args.json.get("withLenght", 500).asInt(),0,5000);
+        uint16_t pwidth = (int)ofClamp(args.json.get("withLength", 500).asInt(),0,5000);
         
     
         if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
@@ -689,6 +697,18 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             string errorMessage="{\"message\":\"error\",\"type\":\"Make vibrate failed :: incorrect index\"}";
             server.send(errorMessage, ipAddress);
         }
+    }
+    else if(message == "grantAccess")
+    {
+        string ipAddress = args.conn.getClientIP();
+        accessGranted[idNumberReference[ipAddress]]=true;
+
+    }
+    else if(message == "revokeAccess")
+    {
+        string ipAddress = args.conn.getClientIP();
+        
+        accessGranted[idNumberReference[ipAddress]]=false;
     }
     
 }

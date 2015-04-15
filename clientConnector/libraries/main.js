@@ -53,9 +53,11 @@ var  connector= (function () {
 				object.socket.onmessage =function got_packet(msg) {
 					console.log(msg);
 					messageObject = JSON.parse(msg.data);
-					if(messageObject["message"]=="buttonEvent")
+
+					if(messageObejct["message"]=="buttonEvent")
 					{
-						if(messageObject["value"]==0)
+						if(messageObject["value"]==0 || messageObject["value"]=="0")
+
 						{
 							object.buttonState=false;
 						}
@@ -172,7 +174,7 @@ var  connector= (function () {
 			}
 			else
 			{
-				return object.getButtonStateVariable;
+				return object.buttonState;
 			}
 		}
 		*/

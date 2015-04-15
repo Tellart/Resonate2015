@@ -3,8 +3,6 @@ var started=false;
 var myButton=false;
 var circleSize=20; 
 
-var myDevice = -1;
-
 var counter = 0;
 
 function setup() {
@@ -21,7 +19,6 @@ function draw() {
 
 if(connector.getInstance().status=="RUNNING" && !started)
   {
-    
     console.log("registering...");
     connector.getInstance().registerButton();
     connector.getInstance().registerOrientation();
@@ -45,8 +42,8 @@ if(connector.getInstance().status=="RUNNING" && !started)
   text("Free Fall: "+connector.getInstance().freeFall, 20, 360);
 
 if (counter%100 == 0){
-  //connector.getInstance().readBatteryLevel();
-  //connector.getInstance().readRSSI();
+//  connector.getInstance().readBatteryLevel();
+//  connector.getInstance().readRSSI();
   counter = 0;
 }
 

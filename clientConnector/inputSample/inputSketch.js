@@ -5,6 +5,7 @@ var circleSize=20;
 
 var myDevice = -1;
 
+
 var counter = 0;
 
 function setup() {
@@ -45,8 +46,13 @@ if(connector.getInstance().status=="RUNNING" && !started)
   text("Free Fall: "+connector.getInstance().freeFall, 20, 360);
 
 if (counter%100 == 0){
+<<<<<<< HEAD:clientConnector/sample/sketch.js
   //connector.getInstance().readBatteryLevel();
   //connector.getInstance().readRSSI();
+=======
+//  connector.getInstance().readBatteryLevel();
+//  connector.getInstance().readRSSI();
+>>>>>>> 128f808721aaab2ceef57fe8cd057f3d8bec2138:clientConnector/inputSample/inputSketch.js
   counter = 0;
 }
 

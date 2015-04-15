@@ -83,6 +83,14 @@ var  connector= (function () {
 						}
 						return;
 					}
+					else if(messageObject["message"] == "RSSI")
+					{
+						object.rssi = messageObject["value"];
+					}
+					else if(messageObject["message"] == "batteryLevel")
+					{
+						object.batteryLevel = messageObject["value"];
+					}
 					else if(messageObject["message"] == "freeFallEvent")
 					{
 						object.freeFall = true;

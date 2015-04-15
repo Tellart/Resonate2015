@@ -19,10 +19,10 @@ function draw() {
     }
 
 
-  if (counter%1000 == 0){
-    connector.getInstance().setColor(connector.getInstance().boardNumber, 255, 0, 0);
+  if (counter%100 == 0){
+    connector.getInstance().setColor(connector.getInstance().boardNumber, 255, 0, 0,255);
       if (counter%2000) {
-        connector.getInstance().setColor(connector.getInstance().boardNumber, 0, 0, 0);
+        connector.getInstance().setColor(connector.getInstance().boardNumber, 0, 0, 0,255);
         connector.getInstance().makeVibrate();
         counter = 0;
       };

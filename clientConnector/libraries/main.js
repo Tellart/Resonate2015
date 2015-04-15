@@ -22,6 +22,9 @@ var  connector= (function () {
         object.tapRegistered 		 = false;
         object.tap					 = false;
 
+        object.shakeRegistered		 = false;
+        object.shaked 				 = false;
+
         object.orientationRegistered = false;
         object.orientation			 = "";
 
@@ -58,7 +61,7 @@ var  connector= (function () {
 					console.log(msg);
 					messageObject = JSON.parse(msg.data);
 
-					if(messageObejct["message"]=="buttonEvent")
+					if(messageObject["message"]=="buttonEvent")
 					{
 						if(messageObject["value"]==0 || messageObject["value"]=="0")
 
@@ -79,6 +82,14 @@ var  connector= (function () {
 							
 						}
 						return;
+					}
+					else if(messageObject["message"] == "RSSI")
+					{
+						object.rssi = messageObject["value"];
+					}
+					else if(messageObject["message"] == "batteryLevel")
+					{
+						object.batteryLevel = messageObject["value"];
 					}
 					else if(messageObject["message"] == "freeFallEvent")
 					{
@@ -170,7 +181,7 @@ var  connector= (function () {
 				object.status = "ERROR";
 			}
 		}
-	
+
 
 		object.setColor = function(deviceNumber,red,green,blue,intensity)
 		{
@@ -266,10 +277,7 @@ var  connector= (function () {
 			this.sendMessage(message);
 
 		}
-		object.shaked= function()
-		{
-			
-		}
+
 		object.releaseShake= function(){
 
 			var message="{\"message\":\"releaseShake\"}";

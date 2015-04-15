@@ -24,10 +24,14 @@ class ofApp : public ofxiOSApp {
         void exit();
         void lostFocus();
         void touchDoubleTap(ofTouchEventArgs & touch);
+    
+        void touchUp(ofTouchEventArgs & touch);
+    
+        
 	/*
         void touchDown(ofTouchEventArgs & touch);
         void touchMoved(ofTouchEventArgs & touch);
-        void touchUp(ofTouchEventArgs & touch);
+     
      
         void touchCancelled(ofTouchEventArgs & touch);
 
@@ -45,10 +49,7 @@ class ofApp : public ofxiOSApp {
      
      }
      
-     //--------------------------------------------------------------
-     void ofApp::touchUp(ofTouchEventArgs & touch){
      
-     }
      
      
      
@@ -100,6 +101,8 @@ class ofApp : public ofxiOSApp {
     
     
         int    numOfConnectedDevices;
+    
+        BOOL   accessRequestNeeded = false;
     
         string delayedMessage="";
         

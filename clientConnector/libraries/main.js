@@ -28,6 +28,10 @@ var  connector= (function () {
         object.orientationRegistered = false;
         object.orientation			 = "";
 
+        object.rssi					 = -1;
+
+        object.batteryLevel			 = -1;
+
         object.setupSocket = function(socketAddress){
 			// setup websocket
 			// get_appropriate_ws_url is a nifty function by the libwebsockets people
@@ -170,6 +174,7 @@ var  connector= (function () {
 			}
 		}
 
+
 		object.setColor = function(deviceNumber,red,green,blue,intensity)
 		{
 			if(arguments.length == 5)
@@ -188,6 +193,40 @@ var  connector= (function () {
 				this.sendMessage(message);
 				
 			}
+		}
+		object.grantAccess = function()
+		{
+			
+			var message="{\"message\":\"grantAccess\"}";
+			this.sendMessage(message);
+			
+		}
+		object.revokeAccess = function()
+		{
+			
+			var message="{\"message\":\"revokeAccess\"}";
+			this.sendMessage(message);
+			
+		}
+		object.readBatteryLevel = function(deviceNumber)
+		{
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
+			var message="{\"message\":\"readBatteryLevel\",\"device\":\""+deviceNumber+"\"}";
+			this.sendMessage(message);
+			
+		}
+		object.readRSSI = function(deviceNumber)
+		{
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
+			var message="{\"message\":\"readRSSI\",\"device\":\""+deviceNumber+"\"}";
+			this.sendMessage(message);
+			
 		}
 		object.registerButton = function(deviceNumber)
 		{

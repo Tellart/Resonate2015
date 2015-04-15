@@ -84,7 +84,10 @@ void ofApp::draw(){
     
     ofBackground(0, 0, 0);
     
-
+    if(accessRequestNeeded)
+    {
+        ofCircle(ofGetWidth()-15, ofGetHeight()-15, 15);
+    }
     
     
     
@@ -211,15 +214,42 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
        
         if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices && red>=0 && red <256 && green>=0 && green <256 && blue>=0 && blue <256 && intensity>=0 && intensity <256)
         {
-            
-            
             [bleDeviceMap[deviceIndex].led setLEDColor:[UIColor colorWithRed:red green:green blue:blue alpha:255] withIntensity:ofMap(intensity, 0, 255, 0, 1)];
         }
         else
         {
-            
             string errorMessage="{\"message\":\"error\",\"type\":\"Set Color failed :: incorrect index\"}";
             server.send(errorMessage, args.conn.getClientIP());
+        }
+        
+        return;
+    }
+    else if(message=="readRSSI")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
+        {
+            [bleDeviceMap[deviceIndex] readBatteryLifeWithHandler:^(NSNumber *number, NSError *error) {
+                string newMessage="{\"message\":\"RSSI\",\"value\":\""+ofToString([[number stringValue] UTF8String])+"\"}";
+                server.send(newMessage, ipAddress);
+                
+            }];
+        }
+        
+        return;
+    }
+    else if(message=="readBatteryLevel")
+    {
+        int deviceIndex = args.json.get("device", -1).asInt();
+        string ipAddress = args.conn.getClientIP();
+        if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
+        {
+            [bleDeviceMap[deviceIndex] readBatteryLifeWithHandler:^(NSNumber *number, NSError *error) {
+                ;
+                string newMessage="{\"message\":\"batteryLevel\",\"value\":\""+ofToString([[number stringValue] UTF8String])+"\"}";
+                server.send(newMessage, ipAddress);
+            }];
         }
         
         return;
@@ -233,7 +263,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         {
             if(registeredForButton.find(deviceIndex)==registeredForButton.end())
             {
-                if(ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex])
+                if(ipAddress == bleIPMap[deviceIndex] || (accessGranted[deviceIndex] || !accessRequestNeeded) )
                 {
                     bool ipPresent = false;
                     for (std::map<int, string>::iterator it=registeredForButton.begin(); it!=registeredForButton.end(); it++) {
@@ -297,7 +327,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         
         if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
         {
-            if(ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex])
+            if(ipAddress == bleIPMap[deviceIndex] || (accessGranted[deviceIndex] || !accessRequestNeeded))
             {
                 vector<string> *vTmp=&registeredForAccelerometer[deviceIndex];
                 
@@ -353,7 +383,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         {
             if(registeredForShake.find(deviceIndex)==registeredForShake.end() )
             {
-                if(ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex])
+                if(ipAddress == bleIPMap[deviceIndex] || (accessGranted[deviceIndex] || !accessRequestNeeded))
                 {
                     bool ipPresent = false;
                     for (std::map<int, string>::iterator it=registeredForShake.begin(); it!=registeredForShake.end(); it++) {
@@ -784,5 +814,16 @@ void ofApp::sendAccelerometerData(){
             }
         }
         timePassedSinceLastSentData = ofGetElapsedTimef();
+    }
+}
+//--------------------------------------------------------------
+void ofApp::touchUp(ofTouchEventArgs & touch){
+    if(touch.x>ofGetWidth()/2)
+    {
+        accessRequestNeeded = true;
+    }
+    else
+    {
+        accessRequestNeeded = false;
     }
 }

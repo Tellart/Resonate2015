@@ -7,21 +7,23 @@ var  connector= (function () {
 
         object.socket 				= new Object();
         object.status 			   	= "INIT";
-        object.buttonStateVariable 	= true;
-        object.buttonRegistered   	= -1;
-
-        object.accelerometer        = {};
-        object.accelerometer.x      = 0;
-        object.accelerometer.y      = 0;
-        object.accelerometer.z      = 0;
-
-        object.temperature          = "";
-        object.freeFall             = false;
-        object.tap					= false;
-        object.orientation			= "";
 
         object.boardNumber          = -1;
 
+        object.buttonState      	= false;
+        object.buttonRegistered   	= false;
+
+        object.temperatureRegistered = false;
+        object.temperature           = "";
+        
+        object.freeFallRegistered    = false;
+        object.freeFall              = false;
+
+        object.tapRegistered 		 = false;
+        object.tap					 = false;
+
+        object.orientationRegistered = false;
+        object.orientation			 = "";
 
         object.setupSocket = function(socketAddress){
 			// setup websocket
@@ -63,14 +65,14 @@ var  connector= (function () {
 							
 							
 						}
+						try{
+					        buttonPressed();
+						}
+						catch(e)
+						{
+							
+						}
 						return;
-					}
-					else if(messageObejct["message"] == "accelerometerEvent")
-					{
-						object.accelerometer.x = messageObejct["x"];
-						object.accelerometer.y = messageObejct["y"];
-						object.accelerometer.z = messageObejct["z"];
-						
 					}
 					else if(messageObejct["message"] == "freeFallEvent")
 					{
@@ -78,13 +80,28 @@ var  connector= (function () {
 						window.setTimeout(function(){
 								object.freeFall = false;
 						},500);
-						
+						try{
+					        isFalling();
+						}
+						catch(e)
+						{
+							
+						}
 					}
 					else if(messageObejct["message"] == "orientationEvent")
 					{
 						object.orientation = messageObejct["value"];
-						
-						
+
+						try{
+					        orientationChanged(object.orientation);
+						}
+						catch(e)
+						{
+							
+						}
+					}else if(messageObejct["message"] == "temperatureEvent")
+					{
+						object.temperature = messageObejct["value"];
 					}
 					else if(messageObejct["message"] == "tapEvent")
 					{
@@ -92,14 +109,44 @@ var  connector= (function () {
 						window.setTimeout(function(){
 								object.tap = false;
 						},100);
-						
+
+						try{
+					        tapped();
+						}
+						catch(e)
+						{
+							
+						}
+					}
+					else if(messageObejct["message"] == "shakeEvent")
+					{
+						object.shaked = true;
+						window.setTimeout(function(){
+								object.shaked = false;
+						},100);
+
+						try{
+					        shaked();
+						}
+						catch(e)
+						{
+							
+						}
 					}else if(messageObejct["message"] == "error")
 					{
 						console.warn(messageObejct["type"]);
 					}
 					else if(messageObejct["message"] == "bleAssigned")
 					{
+						object.status = "RUNNING"
 						object.boardNumber = messageObejct["number"];
+						try{
+					        initDevice(object.boardNumber);
+						}
+						catch(e)
+						{
+							
+						}
 					}
 				}
 
@@ -132,44 +179,79 @@ var  connector= (function () {
 
 		object.setColor = function(deviceNumber,red,green,blue,intensity)
 		{
-			var message="{\"message\":\"setColor\",\"device\":\""+deviceNumber+"\",\"red\":\""+red+"\",\"blue\":\""+blue+"\",\"green\":\""+green+"\",\"intensity\":\""+intensity+"\"}";
-			this.sendMessage(message);
+			if(arguments.length == 5)
+			{	
+				
+				var message="{\"message\":\"setColor\",\"device\":\""+deviceNumber+"\",\"red\":\""+red+"\",\"blue\":\""+blue+"\",\"green\":\""+green+"\",\"intensity\":\""+intensity+"\"}";
+				
+
+				this.sendMessage(message);
+				
+			}
+			else
+			{
+				var message="{\"message\":\"setColor\",\"device\":\""+object.boardNumber+"\",\"red\":\""+arguments[0]+"\",\"blue\":\""+arguments[1]+"\",\"green\":\""+arguments[2]+"\",\"intensity\":\""+arguments[3]+"\"}";
+				
+				this.sendMessage(message);
+				
+			}
 		}
 		object.registerButton = function(deviceNumber)
 		{
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
 			var message="{\"message\":\"registerButton\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);
 			
 		}
-		object.registerAccelerometer = function(deviceNumber)
-		{
-			var message="{\"message\":\"registerAccelerometer\",\"device\":\""+deviceNumber+"\"}";
-			this.sendMessage(message);
-		}
-		object.releaseAccelerometer= function(deviceNumber){
-			var message="{\"message\":\"releaseAccelerometer\",\"device\":\""+deviceNumber+"\"}";
-			this.sendMessage(message);
-		}
 		object.registerTemperature = function(deviceNumber)
 		{
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
 			var message="{\"message\":\"registerTemperature\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);
+			object.temperatureRegistered = true;
+
 		}
 		object.releaseTemperature= function(){
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
 			var message="{\"message\":\"releaseTemperature\"}";
 			this.sendMessage(message);
+			object.temperatureRegistered = false;
 		}
+		
 		object.registerShake = function(deviceNumber)
 		{
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
 			var message="{\"message\":\"registerShake\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);
+
+		}
+		object.shaked= function()
+		{
+			
 		}
 		object.releaseShake= function(){
+
 			var message="{\"message\":\"releaseShake\"}";
 			this.sendMessage(message);
 		}
 		object.registerFreeFall = function(deviceNumber)
 		{
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
 			var message="{\"message\":\"registerFreeFall\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);
 		}
@@ -179,28 +261,63 @@ var  connector= (function () {
 		}
 		object.registerTap = function(deviceNumber)
 		{
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
 			var message="{\"message\":\"registerTap\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);
 		}
 		object.releaseTap= function(){
+			
 			var message="{\"message\":\"releaseTap\"}";
 			this.sendMessage(message);
 		}
 		object.registerOrientation = function(deviceNumber)
 		{
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
 			var message="{\"message\":\"registerOrientation\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);
 		}
 		object.releaseOrientation= function(){
-			var message="{\"message\":\"releaseOrientation\",\"device\":\""+object.boardNumber+"\"}";
+			
+			var message="{\"message\":\"releaseOrientation\"}";
 			this.sendMessage(message);
 		}
-		object.makeVibrate= function(deviceNumber,length){
+		object.makeVibrate= function(deviceNumber){
+
+			if(deviceNumber=="" || deviceNumber==undefined)
+			{
+				deviceNumber =object.boardNumber;
+			}
+			
+			var message;
+			
+			message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\"}";
+			
+			
+			this.sendMessage(message);
+		}
+		object.makeVibrateWithOptions= function(length,amplitude,deviceNumber){
+
+			
 			if(length=="" || length==undefined)
 			{
 				length=500;
 			}
-			var message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\",\"withLenght\":\""+length+"\"}";
+			var message;
+			if(arguments.length==3)
+			{
+				message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\",\"withLenght\":\""+length+"\",\"withAmplitude\":\""+amplitude+"\"}";
+			}
+			else
+			{
+				message="{\"message\":\"makeVibrate\",\"device\":\""+object.boardNumber+"\",\"withLenght\":\""+arguments[0]+"\",\"withAmplitude\":\""+arguments[1]+"\"}";	
+			}
+			console.log(message);
 			this.sendMessage(message);
 		}
 
@@ -210,7 +327,14 @@ var  connector= (function () {
 		}
 		
 		object.sendMessage = function(message){
-			object.socket.send(message);
+			try{
+				object.socket.send(message);
+			}
+			catch(e)
+			{
+				console.warn("error in communicating with the connector");
+			}
+
 		}
         return object;
     }

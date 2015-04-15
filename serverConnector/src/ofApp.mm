@@ -64,7 +64,6 @@ void ofApp::setup(){
                     {
                         NSLog(@" %@",device.identifier.UUIDString);
                     }
-                
                 ;
             }
           
@@ -82,7 +81,13 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
+    
     ofBackground(0, 0, 0);
+    
+
+    
+    
+    
     if ( bSetup ){
         ofSetColor(0,150,0);
         
@@ -93,6 +98,10 @@ void ofApp::draw(){
         {
             ofCircle(ofGetWidth()-13, 100+(index*13), 10);
             index++;
+            if(index>20)
+            {
+                break;
+            }
         }
         
         ofSetColor(150);
@@ -123,7 +132,6 @@ void ofApp::draw(){
     }
     for(int i=0; i<MAX_NUM_OF_DEVICES; i++)
     {
-       
         ofRect(i*18+18, ofGetHeight()-15, 8, 8);
         
     }
@@ -145,26 +153,7 @@ void ofApp::gotMemoryWarning(){
 //--------------------------------------------------------------
 void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
     messages.clear();
-   /* for (int i=0; i<MAX_NUM_OF_DEVICES; i++) {
-        
-    if(bleDeviceMap[i]!=NULL)
-    {
-        NSLog(@"started %@",bleDeviceMap[i].identifier);
-    
-        //[bleDeviceMap[i].accelerometer.rmsDataReadyEvent startNotificationsWithHandler:^(id obj, NSError *error) {
-           
-          //   NSLog(@"device num %@,%@",bleDeviceMap[i].identifier, obj);
-        //}];
-        bleDeviceMap[i].accelerometer.fullScaleRange = MBLAccelerometerRange8G;  // Default: +- 8G
-        bleDeviceMap[i].accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency100Hz;
-        [bleDeviceMap[i].accelerometer.dataReadyEvent startNotificationsWithHandler:^(MBLAccelerometerData *acceleration, NSError *error) {
-            accValues[i].x=(int)acceleration.x;
-            accValues[i].y=(int)acceleration.y;
-            accValues[i].z=(int)acceleration.z;
-           
-        }];
-    }
-    }*/
+    printf("-\n");
 }
 /****************
  ******
@@ -287,6 +276,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             {
                 [bleDeviceMap[it->first].mechanicalSwitch.switchUpdateEvent stopNotifications];
                 registeredForButton.erase(deviceIndex);
+                registeredForButton.erase(it->first);
                 break;
             }
         }
@@ -355,29 +345,37 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
         {
             if(registeredForShake.find(deviceIndex)==registeredForShake.end() )
             {
-                bool ipPresent = false;
-                for (std::map<int, string>::iterator it=registeredForShake.begin(); it!=registeredForShake.end(); it++) {
-                    string ipTmp=it->second;
-                    if(ipTmp==ipAddress)
+                if(ipAddress == bleIPMap[deviceIndex] || accessGranted[deviceIndex])
+                {
+                    bool ipPresent = false;
+                    for (std::map<int, string>::iterator it=registeredForShake.begin(); it!=registeredForShake.end(); it++) {
+                        string ipTmp=it->second;
+                        if(ipTmp==ipAddress)
+                        {
+                            ipPresent=true;
+                        }
+                    }
+                    if(!ipPresent){
+                        
+                        [bleDeviceMap[deviceIndex].accelerometer.shakeEvent startNotificationsWithHandler:^(id obj, NSError *error) {
+                            string newMessage="{\"message\":\"shakeEvent\"}";
+                            server.send(newMessage, ipAddress);
+
+                        }];
+                        
+                        registeredForShake[deviceIndex]=ipAddress;
+                    }
+                    else
                     {
-                        ipPresent=true;
+                        string errorMessage="{\"message\":\"error\",\"type\":\"Register for shake failed :: ip address already registered for this event\"}";
+                        server.send(errorMessage, ipAddress);
                     }
                 }
-                if(!ipPresent){
-                    
-                    [bleDeviceMap[deviceIndex].accelerometer.shakeEvent startNotificationsWithHandler:^(id obj, NSError *error) {
-                        string newMessage="{\"message\":\"shakeEvent\"}";
-                        server.send(newMessage, ipAddress);
-
-                    }];
-                    
-                    registeredForShake[deviceIndex]=ipAddress;
-                }
-                else
-                {
-                    string errorMessage="{\"message\":\"error\",\"type\":\"Register for shake failed :: ip address already registered for this event\"}";
-                    server.send(errorMessage, ipAddress);
-                }
+            }
+            else
+            {
+                string errorMessage="{\"message\":\"error\",\"type\":\"Register for accelerometer failed :: the device you are trying to read is not yours, ask the owner for grant access\"}";
+                server.send(errorMessage, ipAddress);
             }
         }
         else
@@ -492,7 +490,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                         
                         NSString *decimalString =  [NSString stringWithFormat:@"%@",temp];
                         decimalString = [[decimalString componentsSeparatedByString:@" "] objectAtIndex:4] ;
-                        string tempTmp = ofToString([decimalString UTF8String] )+suffix;
+                        string tempTmp = ofToString([decimalString UTF8String] );
                         
                         tempTmp = "{\"message\":\"temperatureEvent\",\"value\":\""+tempTmp+"\"}";
                         
@@ -678,14 +676,11 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
     {
         int deviceIndex = args.json.get("device", -1).asInt();
         string ipAddress = args.conn.getClientIP();
-        uint8_t dcycle =248;
+        //uint8_t dcycle =248;
+        uint8_t dcycle =  (int)ofClamp(args.json.get("withAmplitude", 248).asInt(),0,248);
         uint16_t pwidth = (int)ofClamp(args.json.get("withLenght", 500).asInt(),0,5000);
-        printf(" what %d\n",dcycle);
-       /* if(args.json.get("hasOptions",-1).asBool())
-        {
-            dcycle =ofClamp(args.json.get("dcycle", 500).asInt(),0,5000);
-            pwidth = ofClamp(args.json.get("pwidth",248).asInt(),0,248);
-        }*/
+        
+    
         if(deviceIndex<=MAX_NUM_OF_DEVICES && deviceIndex>=0 && deviceIndex<numOfConnectedDevices)
         {
             [bleDeviceMap[deviceIndex].hapticBuzzer startHapticWithDutyCycle:dcycle pulseWidth:pwidth completion:nil];
@@ -695,6 +690,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             server.send(errorMessage, ipAddress);
         }
     }
+    
 }
 
 //--------------------------------------------------------------

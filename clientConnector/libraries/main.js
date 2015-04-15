@@ -52,10 +52,10 @@ var  connector= (function () {
 				// received message
 				object.socket.onmessage =function got_packet(msg) {
 					console.log(msg);
-					messageObejct = JSON.parse(msg.data);
+					messageObject = JSON.parse(msg.data);
 					if(messageObejct["message"]=="buttonEvent")
 					{
-						if(msg.data["value"]==0)
+						if(messageObject["value"]==0 || messageObject["value"]=="0")
 						{
 							object.buttonStateVariable=false;
 						}
@@ -172,7 +172,7 @@ var  connector= (function () {
 			}
 			else
 			{
-				return object.getButtonStateVariable;
+				return object.buttonState;
 			}
 		}
 		
@@ -311,11 +311,11 @@ var  connector= (function () {
 			var message;
 			if(arguments.length==3)
 			{
-				message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\",\"withLenght\":\""+length+"\",\"withAmplitude\":\""+amplitude+"\"}";
+				message="{\"message\":\"makeVibrate\",\"device\":\""+deviceNumber+"\",\"withLength\":\""+length+"\",\"withAmplitude\":\""+amplitude+"\"}";
 			}
 			else
 			{
-				message="{\"message\":\"makeVibrate\",\"device\":\""+object.boardNumber+"\",\"withLenght\":\""+arguments[0]+"\",\"withAmplitude\":\""+arguments[1]+"\"}";	
+				message="{\"message\":\"makeVibrate\",\"device\":\""+object.boardNumber+"\",\"withLength\":\""+arguments[0]+"\",\"withAmplitude\":\""+arguments[1]+"\"}";	
 			}
 			console.log(message);
 			this.sendMessage(message);

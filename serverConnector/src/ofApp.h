@@ -94,7 +94,7 @@ class ofApp : public ofxiOSApp {
         map<int,string> registeredForOrientation;
     
         map<int,vector<string> > registeredForAccelerometer;
-        map<int,accValue> accValues;
+        map<int,accValue>        accValues;
     
         
     

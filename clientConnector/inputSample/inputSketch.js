@@ -3,14 +3,12 @@ var started=false;
 var myButton=false;
 var circleSize=20; 
 
-var myDevice = 1;
-
 var counter = 0;
 
 function setup() {
    createCanvas(windowWidth, windowHeight);
    connector.getInstance().setupSocket("10.0.0.5:9092");
-   frameRate(30); 
+   frameRate(25); 
 }
 
 function draw() {
@@ -22,19 +20,19 @@ function draw() {
 if(connector.getInstance().status=="RUNNING" && !started)
   {
     console.log("registering...");
-    connector.getInstance().registerButton(myDevice);
-    connector.getInstance().registerOrientation(myDevice);
-    connector.getInstance().registerTemperature(myDevice);
-    connector.getInstance().registerShake(myDevice);
-    connector.getInstance().registerFreeFall(myDevice);
-    connector.getInstance().registerTap(myDevice);
+    connector.getInstance().registerButton();
+    connector.getInstance().registerOrientation();
+    connector.getInstance().registerTemperature();
+    connector.getInstance().registerShake();
+    connector.getInstance().registerFreeFall();
+    connector.getInstance().registerTap();
 
     console.log("done");
-    connector.getInstance().makeVibrate(myDevice);
+    connector.getInstance().makeVibrate();
     started = true;
   }
 
-  text("Device: "+myDevice, 20, 40);
+  text("Device: "+connector.getInstance().boardNumber, 20, 40);
   text("Status: "+connector.getInstance().status, 20,120)
   text("Button: "+connector.getInstance().buttonState, 20, 160);
   text("Temperature: "+connector.getInstance().temperature, 20, 200);
@@ -44,8 +42,8 @@ if(connector.getInstance().status=="RUNNING" && !started)
   text("Free Fall: "+connector.getInstance().freeFall, 20, 360);
 
 if (counter%100 == 0){
-  connector.getInstance().readBatteryLevel();
-  connector.getInstance().readRSSI();
+//  connector.getInstance().readBatteryLevel();
+//  connector.getInstance().readRSSI();
   counter = 0;
 }
 

@@ -111,12 +111,10 @@ void ofApp::draw(){
     } else {
         ofDrawBitmapString("WebSocket setup failed :(", 20,20);
     }
-    
+    // write messages
+    ofSetColor(255);
     int x = 20;
     int y = 50;
-    
-    ofSetColor(255);
-   
     for (int i = messages.size() -1; i >= 0; i-- ){
         if(i<10)
         {
@@ -124,16 +122,26 @@ void ofApp::draw(){
         }
         y += 20;
     }
-    
-    
+    // show devices
     ofSetColor(255,200);
     for (int i=0; i<MAX_NUM_OF_DEVICES; i++) {
+        //if device is not present don't draw
         if(bleDeviceMap[i]!=NULL)
         {
+            //if device is registered to an IP address then show it
+            if(bleIPMap[i]!="")
+            {
+                ofSetColor(0,255,0);
+            }
+            else
+            {
+                ofSetColor(255,0,0);
+            }
             ofNoFill();
             ofSetLineWidth(1);
             ofRect(i*18+18, ofGetHeight()-15, 15, 15);
             ofFill();
+            ofSetColor(255);
         }
     }
     for(int i=0; i<MAX_NUM_OF_DEVICES; i++)
@@ -182,6 +190,7 @@ void ofApp::onOpen( ofxLibwebsockets::Event& args ){
     if (messages.size() > NUM_MESSAGES)
     {
         messages.erase(messages.begin());
+        
     }
     
     assignIPToDevice(cTmp.getClientIP());
@@ -191,11 +200,15 @@ void ofApp::onOpen( ofxLibwebsockets::Event& args ){
 //--------------------------------------------------------------
 void ofApp::onClose( ofxLibwebsockets::Event& args ){
     cout<<"on close"<<endl;
+    
     messages.push_back("Connection closed");
     if (messages.size() > NUM_MESSAGES)
     {
         messages.erase(messages.begin());
     }
+    
+    
+    
     retractIPToDevice(args.conn.getClientIP());
     
 }
@@ -756,10 +769,19 @@ void ofApp::retractIPToDevice(string ip){
     for (int i=0; i<MAX_NUM_OF_DEVICES; i++) {
         if(bleDeviceMap[i]!=NULL && bleIPMap[i] == ip)
         {
+            
             bleIPMap[i] = "";
             return;
         }
     }
+    //deregister for Temperature
+    
+    //deregister for Tap
+    
+    //deregister for Shake
+    
+    //deregister for 
+    
 }
 //--------------------------------------------------------------
 void ofApp::assignIPToDevices(){

@@ -1,3 +1,8 @@
+/*******
+ Made by Tellart
+	prepared for Resonate 2015
+ *******/
+
 #include "ofApp.h"
 //--------------------------------------------------------------
 void ofApp::setup(){

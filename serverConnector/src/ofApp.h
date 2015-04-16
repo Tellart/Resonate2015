@@ -1,3 +1,8 @@
+/*******
+ Made by Tellart
+	prepared for Resonate 2015
+ *******/
+
 #pragma once
 
 #include "ofMain.h"

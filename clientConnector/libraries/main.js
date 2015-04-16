@@ -1,3 +1,8 @@
+/*******   
+Made by Tellart 
+	prepared for Resonate 2015
+*******/
+
 
 var  connector= (function () {
     var instance;

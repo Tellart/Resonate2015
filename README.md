@@ -37,19 +37,19 @@ The server is not necessary but just nice to have, you can directly open _index.
 
 
 
-### `connector` object
+### __`connector` object__
 
 The gem object is a singleton that abstract the controller of the ble modules. 
-To retrieve the object call `getInstance` on gem.
+To retrieve the object call `getInstance` on connector.
 
 ```javascript
 connector.getInstance()
 ```
 
 
-##### Properties
+##### Attributes
 
-`status`  can be __INIT__, __OPENED__, __CLOSED__, __ERROR__
+`status`  _INIT_, _OPENED_, _RUNNING_, _CLOSED_, _ERROR_
 
 ```javascript
 if(connector.getInstance().status=="OPENED")
@@ -58,11 +58,37 @@ if(connector.getInstance().status=="OPENED")
 }
 
 ```
----
-`boardNumber` 
-board number is giving the reference of the device that is associated with your ip address. The range will span between 0 and 4.
 
 
+`boardNumber` -1 until instantiated, then 0-5
+
+`buttonState` true is pressed, false is up
+
+`buttonRegistered` true or false
+
+`temperatureRegistered` true or false
+
+`temperature` eg 24.25
+
+`freeFallRegistered` true or false
+
+`freeFall` true if in free fall
+
+`tapRegistered` true or false
+
+`tap` true if tap is sensed
+
+`shakeRegistered` true or false
+
+`shaked` true if shake is sensed
+
+`orientationRegistered` true or false
+
+`orientation` "Portrait","PortraitUpsideDown","LandscapeLeft","LandscapeRight"
+
+`rssi` signal strength, negative integer with closer to 0 = closer to connector
+
+`batteryLevel` 0 to 100
 
 ##### Methods
 __utility methods__  
@@ -99,39 +125,20 @@ You can register to observe a sensor, when done you can release it.
 `registerTap`  
 `releaseTap`
 
-__attributes__
 
-`status` "INIT","OPENED","CLOSED","RUNNING","ERROR"
+### global methods
 
-`boardNumber` -1 until instantiated, then 0-5
+`initDevice(deviceNumber)` 
 
-`buttonState` true is pressed, false is up
+`shaked()`
 
-`buttonRegistered` true or false
+`tapped()`
 
-`temperatureRegistered` true or false
+`orientationChanged(deviceOrientation)`
 
-`temperature` eg 24.25 C
+`isFalling()`
 
-`freeFallRegistered` true or false
-
-`freeFall` true if in free fall
-
-`tapRegistered` true or false
-
-`tap` true if tap is sensed
-
-`shakeRegistered` true or false
-
-`shaked` true if shake is sensed
-
-`orientationRegistered` true or false
-
-`orientation` "Portrait","PortraitUpsideDown","LandscapeLeft","LandscapeRight"
-
-`rssi` signal strength, negative integer with closer to 0 = closer to connector
-
-`batteryLevel` 0 to 100
+`buttonPressed()`
 
 
 

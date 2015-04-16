@@ -74,6 +74,7 @@ __actuators methods__
 `setColor(deviceNumber,red,green,blue,intensity)` set the color the led of one board. _deviceNumber_ is an integer between 0 and 4, the components _red_, _green_, _blue_ and _intensity_ are integers between 0 and 255
 
 `makeVibrate(deviceNumber)` _deviceNumber_ is an integer between 0 and 4, it will create a vibration
+`makeVibrateWithOptions(length,amplitude,deviceNumber)` length is an integer in ms between 0 and 5000, amplitude is 0 to 255
 
 __sensors methods__ 
 

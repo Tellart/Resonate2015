@@ -1,6 +1,7 @@
 
 var started = false;
 
+
 function setup() {
    createCanvas(windowWidth, windowHeight);
    connector.getInstance().setupSocket("10.0.0.5:9092");
@@ -16,6 +17,7 @@ if(connector.getInstance().status=="RUNNING" && !started)
   {
 
   }
+
   
 }
 

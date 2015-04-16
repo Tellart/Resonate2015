@@ -1,7 +1,7 @@
 #Designing connected experiences with BLE 
 
 
-[Workshop destription](http://resonate.io/2015/education/designing-connected-experiences-with-ble/)
+[Workshop description](http://resonate.io/2015/education/designing-connected-experiences-with-ble/)
 
 
 ## How To Get Started

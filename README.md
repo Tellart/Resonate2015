@@ -1,7 +1,7 @@
 #Designing connected experiences with BLE 
 
 
-[Workshop destription](http://resonate.io/2015/education/designing-connected-experiences-with-ble/)
+[Workshop description](http://resonate.io/2015/education/designing-connected-experiences-with-ble/)
 
 
 ## How To Get Started
@@ -39,7 +39,8 @@ The server is not necessary but just nice to have, you can directly open _index.
 
 ### __`connector` object__
 
-The gem object is a singleton that abstract the controller of the ble modules. 
+The connector object is a singleton that abstracts the controller of the ble modules. 
+
 To retrieve the object call `getInstance` on connector.
 
 ```javascript

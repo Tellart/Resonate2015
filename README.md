@@ -39,8 +39,8 @@ The server is not necessary but just nice to have, you can directly open _index.
 
 ### `connector` object
 
-The gem object is a singleton that abstract the controller of the ble modules. 
-To retrieve the object call `getInstance` on gem.
+The connector object is a singleton that abstracts the controller of the ble modules. 
+To retrieve the object call `getInstance` on connector.
 
 ```javascript
 connector.getInstance()

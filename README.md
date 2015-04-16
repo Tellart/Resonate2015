@@ -106,21 +106,27 @@ __attributes__
 `boardNumber` -1 until instantiated, then 0-5
 
 `buttonState` true is pressed, false is up
+
 `buttonRegistered` true or false
 
 `temperatureRegistered` true or false
+
 `temperature` eg 24.25 C
 
 `freeFallRegistered` true or false
+
 `freeFall` true if in free fall
 
 `tapRegistered` true or false
+
 `tap` true if tap is sensed
 
 `shakeRegistered` true or false
+
 `shaked` true if shake is sensed
 
 `orientationRegistered` true or false
+
 `orientation` "Portrait","PortraitUpsideDown","LandscapeLeft","LandscapeRight"
 
 `rssi` signal strength, negative integer with closer to 0 = closer to connector

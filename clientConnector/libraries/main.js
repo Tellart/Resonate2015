@@ -272,10 +272,7 @@ var  connector= (function () {
 
 		}
 		object.releaseTemperature= function(){
-			if(deviceNumber=="" || deviceNumber==undefined)
-			{
-				deviceNumber =object.boardNumber;
-			}
+			
 			var message="{\"message\":\"releaseTemperature\"}";
 			this.sendMessage(message);
 			object.temperatureRegistered = false;

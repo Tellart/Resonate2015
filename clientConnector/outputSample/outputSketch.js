@@ -20,7 +20,7 @@ function draw() {
 
 
   if (counter%100 == 0){
-    connector.getInstance().setColor(connector.getInstance().boardNumber, 255, 0, 0,255);
+    connector.getInstance().setColor(connector.getInstance().boardNumber, 255, 255, 255,255);
       if (counter%2000) {
         connector.getInstance().setColor(connector.getInstance().boardNumber, 0, 0, 0,255);
         connector.getInstance().makeVibrate();

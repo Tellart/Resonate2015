@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "DF64BDB9F14FE5F287F6C9DEDD4FA9C2742B4282",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "DF64BDB9F14FE5F287F6C9DEDD4FA9C2742B4282" : 0,
+    "EF51387A5AF28E4351AFB0302884600583A438B5" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F12A3340-0051-4754-8C87-F90BB9C8E16F",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "DF64BDB9F14FE5F287F6C9DEDD4FA9C2742B4282" : "Resonate2015\/",
+    "EF51387A5AF28E4351AFB0302884600583A438B5" : "Resonate2015\/JSONKit\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "serverConnector2",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "serverConnector2\/serverConnector2.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Tellart\/Resonate2015.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "DF64BDB9F14FE5F287F6C9DEDD4FA9C2742B4282"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/johnezang\/JSONKit",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "EF51387A5AF28E4351AFB0302884600583A438B5"
+    }
+  ]
+}

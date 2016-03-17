@@ -9,7 +9,7 @@
 #include "ofxiOS.h"
 #include "ofxiOSExtras.h"
 #include "ofxLibwebsockets.h"
-#import <MetaWear/MetaWear.h>
+#import  <Metawear/MetaWear.h>
 
 #define NUM_MESSAGES 30 // how many past messages we want to keep
 #define MAX_NUM_OF_DEVICES 6

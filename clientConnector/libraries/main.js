@@ -237,9 +237,11 @@ var  connector= (function () {
 		}
 		object.readBatteryLevel = function(deviceNumber)
 		{
-			if(deviceNumber=="" || deviceNumber==undefined)
+			if(deviceNumber<0 || deviceNumber==undefined)
 			{
-				deviceNumber =object.boardNumber;
+				deviceNumber = object.boardNumber;
+				console.error("readBatteryLevel :::: device number is not correct");
+				return;
 			}
 			var message="{\"message\":\"readBatteryLevel\",\"device\":\""+deviceNumber+"\"}";
 			this.sendMessage(message);

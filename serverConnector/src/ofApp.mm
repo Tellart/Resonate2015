@@ -51,7 +51,7 @@ void ofApp::setup(){
                         numOfConnectedDevices=0;
                         accessGranted[idNumberReference[device.identifier.UUIDString.UTF8String]] = false;
                         
-                        device.accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency1_56Hz;
+                       // device.accelerometer.sampleFrequency = MBLAccelerometerSampleFrequency1_56Hz;
                         
                         for (int k=0; k<MAX_NUM_OF_DEVICES; k++) {
                             if(bleDeviceMap[k]!=nil)
@@ -395,11 +395,11 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                     }
                     if(!ipPresent){
                         
-                        [bleDeviceMap[deviceIndex].accelerometer.shakeEvent startNotificationsWithHandler:^(id obj, NSError *error) {
+                       /* [bleDeviceMap[deviceIndex].accelerometer.shakeEvent startNotificationsWithHandler:^(id obj, NSError *error) {
                             string newMessage="{\"message\":\"shakeEvent\"}";
                             server.send(newMessage, ipAddress);
                             
-                        }];
+                        }];*/
                         
                         registeredForShake[deviceIndex]=ipAddress;
                     }
@@ -435,7 +435,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             string ipTmp=it->second;
             if(ipTmp==ipAddress)
             {
-                [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];
+          //      [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];
                 registeredForShake.erase(deviceIndex);
                 registeredForShake.erase(it, it);
                 registeredForShake.erase(it->first);
@@ -464,11 +464,11 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                     }
                     if(!ipPresent){
                         
-                        [bleDeviceMap[deviceIndex].accelerometer.tapEvent startNotificationsWithHandler:^(id obj, NSError *error) {
+                  /*      [bleDeviceMap[deviceIndex].accelerometer.tapEvent startNotificationsWithHandler:^(id obj, NSError *error) {
                             string newMessage="{\"message\":\"tapEvent\"}";
                             server.send(newMessage, ipAddress);
                             
-                        }];
+                        }];*/
                         
                         registeredForTap[deviceIndex]=ipAddress;
                     }
@@ -504,7 +504,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             string ipTmp=it->second;
             if(ipTmp==ipAddress)
             {
-                [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];
+           /*     [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];*/
                 registeredForTap.erase(deviceIndex);
                 registeredForTap.erase(it, it);
                 registeredForTap.erase(it->first);
@@ -532,7 +532,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                         }
                     }
                     if(!ipPresent){
-                        bleDeviceMap[deviceIndex].temperature.samplePeriod = 2000;
+                     /*   bleDeviceMap[deviceIndex].temperature.samplePeriod = 2000;
                         [ bleDeviceMap[deviceIndex].temperature.dataReadyEvent startNotificationsWithHandler:^(NSDecimalNumber* temp, NSError *error) {
                             string suffix = bleDeviceMap[deviceIndex].temperature.units == MBLTemperatureUnitCelsius ? "°C" : "°F";
                             
@@ -544,7 +544,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                             
                             server.send(tempTmp, ipAddress);
                             
-                        }];
+                        }];*/
                         registeredForTemperature[deviceIndex]=ipAddress;
                     }
                     else
@@ -578,7 +578,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             string ipTmp=it->second;
             if(ipTmp==ipAddress)
             {
-                [bleDeviceMap[it->first].temperature.dataReadyEvent stopNotifications];
+          /*      [bleDeviceMap[it->first].temperature.dataReadyEvent stopNotifications];*/
                 registeredForTemperature.erase(deviceIndex);
                 registeredForTemperature.erase(it, it);
                 registeredForTemperature.erase(it->first);
@@ -605,13 +605,13 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                 }
                 if(!ipPresent){
                     
-                    [ bleDeviceMap[deviceIndex].accelerometer.freeFallEvent startNotificationsWithHandler:^(MBLEvent *freeFallEvent, NSError *error) {
+            /*        [ bleDeviceMap[deviceIndex].accelerometer.freeFallEvent startNotificationsWithHandler:^(MBLEvent *freeFallEvent, NSError *error) {
                         
                         string newMessage = "{\"message\":\"freeFallEvent\"}";
                         
                         server.send(newMessage, ipAddress);
                         
-                    }];
+                    }];*/
                     
                     registeredForFreeFall[deviceIndex]=ipAddress;
                 }
@@ -639,7 +639,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             string ipTmp=it->second;
             if(ipTmp==ipAddress)
             {
-                [bleDeviceMap[it->first].accelerometer.freeFallEvent stopNotifications];
+             //   [bleDeviceMap[it->first].accelerometer.freeFallEvent stopNotifications];
                 registeredForFreeFall.erase(deviceIndex);
                 registeredForFreeFall.erase(it, it);
                 registeredForFreeFall.erase(it->first);
@@ -665,7 +665,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                 }
                 if(!ipPresent){
                     
-                    [bleDeviceMap[deviceIndex].accelerometer.orientationEvent startNotificationsWithHandler:^(id obj, NSError *error) {
+                 /*   [bleDeviceMap[deviceIndex].accelerometer.orientationEvent startNotificationsWithHandler:^(id obj, NSError *error) {
                         MBLOrientationData *data = obj;
                         string orientation = "";
                         
@@ -687,7 +687,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
                         
                         server.send(newMessage, ipAddress);
                         
-                    }];
+                    }];*/
                     
                     registeredForOrientation[deviceIndex]=ipAddress;
                 }
@@ -715,7 +715,7 @@ void ofApp::onMessage( ofxLibwebsockets::Event& args ){
             string ipTmp=it->second;
             if(ipTmp==ipAddress)
             {
-                [bleDeviceMap[it->first].accelerometer.orientationEvent stopNotifications];
+            /*    [bleDeviceMap[it->first].accelerometer.orientationEvent stopNotifications];*/
                 registeredForOrientation.erase(deviceIndex);
                 registeredForOrientation.erase(it, it);
                 registeredForOrientation.erase(it->first);
@@ -804,7 +804,7 @@ void ofApp::retractIPToDevice(string ip){
         string ipTmp=it->second;
         if(ipTmp==ip)
         {
-            [bleDeviceMap[it->first].temperature.dataReadyEvent stopNotifications];
+          /*  [bleDeviceMap[it->first].temperature.dataReadyEvent stopNotifications];*/
             registeredForTemperature.erase(it, it);
             registeredForTemperature.erase(it->first);
             break;
@@ -816,7 +816,7 @@ void ofApp::retractIPToDevice(string ip){
         string ipTmp=it->second;
         if(ipTmp==ip)
         {
-            [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];
+          /*  [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];*/
           
             registeredForTap.erase(it, it);
             registeredForTap.erase(it->first);
@@ -829,7 +829,7 @@ void ofApp::retractIPToDevice(string ip){
         string ipTmp=it->second;
         if(ipTmp==ip)
         {
-            [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];
+          /*  [bleDeviceMap[it->first].accelerometer.shakeEvent stopNotifications];*/
             registeredForShake.erase(it, it);
             registeredForShake.erase(it->first);
             break;
@@ -841,7 +841,7 @@ void ofApp::retractIPToDevice(string ip){
         string ipTmp=it->second;
         if(ipTmp==ip)
         {
-            [bleDeviceMap[it->first].accelerometer.orientationEvent stopNotifications];
+      /*      [bleDeviceMap[it->first].accelerometer.orientationEvent stopNotifications];*/
             registeredForOrientation.erase(it, it);
             registeredForOrientation.erase(it->first);
             break;

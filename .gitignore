@@ -17,7 +17,8 @@ DerivedData
 *.ipa
 *.xcuserstate
 .DS_Store
-
+PocketSocket/
+JSONKit/
 # CocoaPods
 #
 # We recommend against adding the Pods directory to your .gitignore. However

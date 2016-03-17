@@ -1,0 +1,1 @@
+../../../../Metawear-iOSAPI/MetaWear.framework/Versions/A/Headers/MBLAmbientLightLTR329.h

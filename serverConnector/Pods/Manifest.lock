@@ -1,0 +1,13 @@
+PODS:
+  - Bolts/Tasks (1.6.0)
+  - Metawear-iOSAPI (2.3.1):
+    - Bolts/Tasks (~> 1.6)
+
+DEPENDENCIES:
+  - Metawear-iOSAPI
+
+SPEC CHECKSUMS:
+  Bolts: f52a250053bb517ca874523c3913776359ab3def
+  Metawear-iOSAPI: a2cfabd6965aa49b2e69bfe88fb5e6cad1b74d34
+
+COCOAPODS: 0.39.0

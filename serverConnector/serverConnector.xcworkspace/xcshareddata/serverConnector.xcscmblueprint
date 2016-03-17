@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "DF64BDB9F14FE5F287F6C9DEDD4FA9C2742B4282",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "DF64BDB9F14FE5F287F6C9DEDD4FA9C2742B4282" : 0,
+    "9853450E498DDBC251C2D190A32DF3B825888D34" : 0,
+    "FB950DA91696DB40601A43AFF1A56B2E39217374" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F14AA064-6615-4A4D-B6D8-745E6A05EEF4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "DF64BDB9F14FE5F287F6C9DEDD4FA9C2742B4282" : "Resonate2015\/",
+    "9853450E498DDBC251C2D190A32DF3B825888D34" : "..\/addons\/Metawear-iOSAPI",
+    "FB950DA91696DB40601A43AFF1A56B2E39217374" : "..\/addons\/ofxLibwebsockets"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "serverConnector",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "serverConnector\/serverConnector.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mbientlab\/Metawear-iOSAPI.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9853450E498DDBC251C2D190A32DF3B825888D34"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Tellart\/Resonate2015.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "DF64BDB9F14FE5F287F6C9DEDD4FA9C2742B4282"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/labatrockwell\/ofxLibwebsockets.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FB950DA91696DB40601A43AFF1A56B2E39217374"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Metawear-iOSAPI"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/Bolts" "${PODS_ROOT}/Headers/Public/Metawear-iOSAPI" "${PODS_ROOT}/Headers/Public/PocketSocket"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/Bolts" -isystem "${PODS_ROOT}/Headers/Public/Metawear-iOSAPI" -isystem "${PODS_ROOT}/Headers/Public/PocketSocket"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"Bolts" -l"PocketSocket" -l"system" -l"z" -framework "CFNetwork" -framework "CoreBluetooth" -framework "CoreData" -framework "Foundation" -framework "MetaWear" -framework "Security"
+PODS_ROOT = ${SRCROOT}/Pods
